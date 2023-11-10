@@ -14,3 +14,8 @@ configs/zitadel-service-user-key.json
 /.idea/vcs.xml
 /.idea/workspace.xml
 /.idea/shelf/Uncommitted_changes_before_Update_at_12_08_23,_21_54_[Changes]1/shelved.patch
+/.air.toml
+/tmp/build-errors.log
+/tmp/main
+/.idea/message-proxy.iml
+/.idea/modules.xml
