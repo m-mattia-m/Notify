@@ -1,0 +1,7 @@
+**/.dockerignore
+**/.env
+**/.env.dist
+**/.gitignore
+**/db-migration/
+**/docker-compose.yaml
+**/.air.toml
