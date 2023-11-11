@@ -8,6 +8,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"message-proxy/docs"
+	"message-proxy/internal/api/auth"
 	v1 "message-proxy/internal/api/v1"
 	"message-proxy/internal/service"
 	"net/http"
@@ -49,28 +50,32 @@ func Router(svc service.Service) *gin.Engine {
 		c.JSON(http.StatusOK, "👋 OK")
 	})
 
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/v1/swagger/index.html")
+	})
+
 	notificationApiClient := v1.NewNotificationApiClient()
+	settingsApiClient := v1.NewSettingApiClient()
 
 	v1Group := r.Group("/v1")
 	{
-		settingsGroup := v1Group.Group("/settings")
+		settingsGroup := v1Group.Group("/settings", auth.Authenticate)
 		{
 			projectGroup := settingsGroup.Group("/projects")
 			{
-				projectGroup.POST("")              // Create Project
-				projectGroup.GET("")               // List Projects
-				projectGroup.GET("/:projectId")    // Get Project
-				projectGroup.PUT("/:projectId")    // Update Project
-				projectGroup.DELETE("/:projectId") // Delete Project
+				projectGroup.POST("", settingsApiClient.CreateProject)
+				projectGroup.GET("", settingsApiClient.ListProjects)
+				projectGroup.GET("/:projectId", settingsApiClient.GetProject)
+				projectGroup.PUT("/:projectId", settingsApiClient.UpdateProject)
+				projectGroup.DELETE("/:projectId", settingsApiClient.DeleteProject)
 
 				hostGroup := projectGroup.Group("/:projectId/hosts")
 				{
-					hostGroup.POST("")           // add host
-					hostGroup.GET("")            // list hosts
-					hostGroup.GET("/:hostId")    // get host
-					hostGroup.PUT("/:hostId")    // update host
-					hostGroup.DELETE("/:hostId") // delete host
-					hostGroup.PUT("/:hostId/verify")
+					hostGroup.POST("", settingsApiClient.CreateHost)
+					hostGroup.GET("", settingsApiClient.ListHosts)
+					hostGroup.GET("/:hostId", settingsApiClient.GetHost)
+					hostGroup.DELETE("/:hostId", settingsApiClient.DeleteHost)
+					hostGroup.PUT("/:hostId/verify", settingsApiClient.VerifyHost)
 				}
 			}
 		}

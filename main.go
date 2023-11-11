@@ -54,8 +54,6 @@ func main() {
 
 	svc := service.NewClient()
 
-	log.Info("info for sentry")
-
 	router := api.Router(svc)
 	err = router.Run(fmt.Sprintf(":%s", viper.GetString("server.port")))
 	if err != nil {
@@ -79,6 +77,10 @@ func initLogger() error {
 	log.SetReportCaller(true)
 	log.SetLevel(log.DebugLevel)
 	log.SetOutput(log.StandardLogger().Out)
+
+	if !viper.GetBool("logging.enable.sentry") {
+		return nil
+	}
 
 	sentryLevels := []log.Level{log.ErrorLevel, log.FatalLevel, log.PanicLevel, log.InfoLevel}
 

@@ -1,5 +1,34 @@
 basePath: /v1
 definitions:
+  model.Host:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      host:
+        type: string
+      id:
+        type: string
+      project_id:
+        type: string
+      stage:
+        description: DEV, TEST, ABT, PROD -> user can create own stages
+        type: string
+      updated_at:
+        type: string
+      verified:
+        type: boolean
+      verify_token:
+        type: string
+    type: object
+  model.HostRequest:
+    properties:
+      host:
+        type: string
+      stage:
+        type: string
+    type: object
   model.HttpError:
     properties:
       message:
@@ -7,9 +36,15 @@ definitions:
     type: object
   model.Project:
     properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
       id:
         type: string
       name:
+        type: string
+      updated_at:
         type: string
       user_id:
         type: string
@@ -17,6 +52,11 @@ definitions:
   model.ProjectRequest:
     properties:
       name:
+        type: string
+    type: object
+  model.SuccessMessage:
+    properties:
+      message:
         type: string
     type: object
 externalDocs:
@@ -37,6 +77,35 @@ info:
   version: "1.0"
 paths:
   /settings/projects:
+    get:
+      consumes:
+      - application/json
+      description: List all projects from the signed-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Project'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
     post:
       consumes:
       - application/json
@@ -72,6 +141,304 @@ paths:
       - Bearer: []
       tags:
       - Project
+  /settings/projects/{projectId}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a project by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+    get:
+      consumes:
+      - application/json
+      description: Returns a project by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+    put:
+      consumes:
+      - application/json
+      description: Updates a project by their id from the request body which is also
+        sent and return this project.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: ProjectRequest
+        in: body
+        name: ProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+  /settings/projects/{projectId}/hosts:
+    get:
+      consumes:
+      - application/json
+      description: List all hosts from the given project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Host'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+    post:
+      consumes:
+      - application/json
+      description: Creates a host from the request body and the projectId which is
+        also sent and return this host.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: HostRequest
+        in: body
+        name: HostRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.HostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Host'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+  /settings/projects/{projectId}/hosts/{hostId}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a host by their id and their projectId.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: hostId
+        in: path
+        name: hostId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+    get:
+      consumes:
+      - application/json
+      description: Returns a host by their id and their projectId.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: hostId
+        in: path
+        name: hostId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Host'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+    put:
+      consumes:
+      - application/json
+      description: trigger a verification from the given host
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: hostId
+        in: path
+        name: hostId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Host'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
 schemes:
 - https
 securityDefinitions:
