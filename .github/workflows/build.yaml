@@ -16,4 +16,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build image
-        run: docker build . --file ./.docker/Dockerfile --tag $IMAGE_NAME --label $IMAGE_TAG
+        run: docker build . --file ./.docker/Dockerfile --tag $IMAGE_NAME
