@@ -9,7 +9,7 @@ type Client struct {
 }
 
 type Service interface {
-	IfHostOrIpVerified(clientIP string, clientHost string) (bool, error)
+	IfHostVerified(clientHost string) (bool, error)
 	CreateHost(hostRequest model.HostRequest, projectId string) (*model.Host, error)
 	GetHost(hostId, projectId string) (*model.Host, error)
 	ListHosts(projectId string) ([]*model.Host, error)
@@ -21,6 +21,9 @@ type Service interface {
 	ListProjects(userId string) ([]*model.Project, error)
 	UpdateProject(projectId string, projectRequest model.ProjectRequest, userId string) (*model.Project, error)
 	DeleteProject(projectId, userId string) (*model.SuccessMessage, error)
+
+	verifyHost(host, verificationToken string) (bool, error)
+	queryTXTVerificationRecord(host, dnsServer string) ([]string, error)
 }
 
 func NewClient() Service {

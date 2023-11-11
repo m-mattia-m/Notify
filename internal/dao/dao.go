@@ -10,7 +10,7 @@ import (
 type Dao interface {
 	GetConnection() error
 
-	IfHostVerified(clientIP, clientHost string) (bool, error)
+	IfHostVerified(clientHost string) (bool, error)
 	IfHostInThisProjectAlreadyExist(host model.Host) (bool, error)
 	CreateHost(host model.Host) (*model.Host, error)
 	GetHost(hostFilter model.Host) (*model.Host, error)

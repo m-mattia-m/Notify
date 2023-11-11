@@ -401,6 +401,7 @@ paths:
       - Bearer: []
       tags:
       - Host
+  /settings/projects/{projectId}/hosts/{hostId}/verify:
     put:
       consumes:
       - application/json

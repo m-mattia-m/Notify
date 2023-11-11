@@ -470,65 +470,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "trigger a verification from the given host",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Host"
-                ],
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "projectId",
-                        "name": "projectId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "hostId",
-                        "name": "hostId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Host"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/model.HttpError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/model.HttpError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/model.HttpError"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -566,6 +507,67 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.SuccessMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/projects/{projectId}/hosts/{hostId}/verify": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "trigger a verification from the given host",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Host"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "hostId",
+                        "name": "hostId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Host"
                         }
                     },
                     "400": {

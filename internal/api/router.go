@@ -100,16 +100,15 @@ func setService(svc service.Service) gin.HandlerFunc {
 
 func checkIfRequestFromVerifiedSource(svc service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		clientIP := c.ClientIP()
 		clientHost := c.Request.Host
 
-		verified, err := svc.IfHostOrIpVerified(clientIP, clientHost)
+		verified, err := svc.IfHostVerified(clientHost)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "access denied"})
 			return
 		}
 
-		if verified {
+		if !verified {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "access denied"})
 			return
 		}

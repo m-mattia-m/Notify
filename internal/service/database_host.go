@@ -2,8 +2,8 @@ package service
 
 import "message-proxy/internal/model"
 
-func (dbc *DbClient) IfHostOrIpVerified(clientIP, clientHost string) (bool, error) {
-	return dbc.dao.IfHostVerified(clientIP, clientHost)
+func (dbc *DbClient) IfHostVerified(clientHost string) (bool, error) {
+	return dbc.dao.IfHostVerified(clientHost)
 }
 
 func (dbc *DbClient) IfHostInThisProjectAlreadyExist(host model.Host) (bool, error) {

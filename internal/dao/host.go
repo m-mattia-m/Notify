@@ -10,12 +10,10 @@ import (
 	"time"
 )
 
-func (dc *DaoClient) IfHostVerified(clientIP, clientHost string) (bool, error) {
+func (dc *DaoClient) IfHostVerified(clientHost string) (bool, error) {
 	ctx := context.Background()
 	filter := bson.M{
-		"host": bson.M{
-			"$in": []string{clientIP, clientHost},
-		},
+		"host": clientHost,
 	}
 	hostsResponse, err := dc.engine.Database(dc.dbName).Collection("host").Find(ctx, filter)
 	if err != nil {
@@ -27,7 +25,7 @@ func (dc *DaoClient) IfHostVerified(clientIP, clientHost string) (bool, error) {
 	var hosts []model.Host
 	for hostsResponse.Next(ctx) {
 		var host model.Host
-		err = hostsResponse.Decode(&hosts)
+		err = hostsResponse.Decode(&host)
 		if err != nil {
 			return false, err
 		}

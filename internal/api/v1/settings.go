@@ -353,7 +353,7 @@ func (sac *SettingsApiClient) GetHost(c *gin.Context) {
 // @title           		VerifyHost
 // @description     		trigger a verification from the given host
 // @Tags 					Host
-// @Router  				/settings/projects/{projectId}/hosts/{hostId} [put]
+// @Router  				/settings/projects/{projectId}/hosts/{hostId}/verify [put]
 // @Accept 					json
 // @Produce					json
 // @Security				Bearer
