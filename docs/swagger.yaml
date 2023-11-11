@@ -1,4 +1,82 @@
+basePath: /v1
+definitions:
+  model.HttpError:
+    properties:
+      message:
+        type: string
+    type: object
+  model.Project:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  model.ProjectRequest:
+    properties:
+      name:
+        type: string
+    type: object
+externalDocs:
+  description: Docs
+  url: https://docs.makenotify.io
+host: api.makenotify.io
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: develop@makenotify.io
+    name: API Support
+  description: This is the API for Notify. With Notify you can securely send messages
+    from the frontend to your chosen provider to send messages.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://makenotify.io/terms-of-use/
+  title: Notify-API
+  version: "1.0"
+paths:
+  /settings/projects:
+    post:
+      consumes:
+      - application/json
+      description: Creates a project from the request body which is also sent and
+        return this project.
+      parameters:
+      - description: ProjectRequest
+        in: body
+        name: ProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+schemes:
+- https
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

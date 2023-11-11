@@ -12,6 +12,35 @@ import (
 	"time"
 )
 
+// @title Notify-API
+// @version 1.0
+// @description This is the API for Notify. With Notify you can securely send messages from the frontend to your chosen provider to send messages.
+// @termsOfService  https://makenotify.io/terms-of-use/
+
+// @contact.name API Support
+// @contact.email develop@makenotify.io
+
+// @schemes https
+// @host      api.makenotify.io
+// @BasePath  /v1
+
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @externalDocs.description  Docs
+// @externalDocs.url          https://docs.makenotify.io
+
+// @tokenUrl https://notify-asdf.zitadel.cloud/oauth/v2/token
+// @authorizationUrl https://notify-asdf.zitadel.cloud/oauth/v2/authorize
+// @scope.openid Default Grants
+// @scope.profile Default Grants
+// @scope.email Default Grants
+// @scope.roles Default Grants
+
 func main() {
 	err := initConfig()
 	if err != nil {
@@ -53,7 +82,6 @@ func initLogger() error {
 
 	sentryLevels := []log.Level{log.ErrorLevel, log.FatalLevel, log.PanicLevel, log.InfoLevel}
 
-	fmt.Println(fmt.Sprintf("DNS: %s", viper.GetString("logging.sentry.dsn")))
 	sentryHook, err := sentrylogrus.New(sentryLevels, sentry.ClientOptions{
 		Dsn: viper.GetString("logging.sentry.dsn"),
 		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
