@@ -101,7 +101,7 @@ func setService(svc service.Service) gin.HandlerFunc {
 
 func checkIfRequestFromVerifiedSource(svc service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if strings.HasPrefix(c.Request.URL.Path, "/v1/settings/") {
+		if !strings.HasPrefix(c.Request.URL.Path, "/v1/notification/") {
 			return
 		}
 
