@@ -7,7 +7,7 @@ import (
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"message-proxy/internal/model"
+	"notify/internal/model"
 	"strings"
 )
 

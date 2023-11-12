@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"message-proxy/internal/helper"
-	"message-proxy/internal/model"
 	"net/http"
+	"notify/internal/helper"
+	"notify/internal/model"
 )
 
 func Authenticate(c *gin.Context) {

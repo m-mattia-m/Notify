@@ -3,9 +3,9 @@ package v1
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"message-proxy/internal/helper"
-	"message-proxy/internal/model"
-	"message-proxy/internal/service"
+	"notify/internal/helper"
+	"notify/internal/model"
+	"notify/internal/service"
 )
 
 func getServiceAndUser(c *gin.Context, ifGetUser bool) (*service.Client, *model.OidcUser, error) {

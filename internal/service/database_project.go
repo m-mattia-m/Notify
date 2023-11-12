@@ -1,6 +1,6 @@
 package service
 
-import "message-proxy/internal/model"
+import "notify/internal/model"
 
 func (dbc *DbClient) IfProjectWithThisNameAlreadyExist(project model.Project) (bool, error) {
 	return dbc.dao.IfProjectWithThisNameAlreadyExist(project)

@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"message-proxy/internal/model"
+	"notify/internal/model"
 	"slices"
 	"strings"
 )

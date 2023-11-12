@@ -4,7 +4,7 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"message-proxy/internal/model"
+	"notify/internal/model"
 )
 
 func (c *Client) CreateProject(projectRequest model.ProjectRequest, userId string) (*model.Project, error) {

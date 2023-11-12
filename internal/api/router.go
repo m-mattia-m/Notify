@@ -7,11 +7,12 @@ import (
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"message-proxy/docs"
-	"message-proxy/internal/api/auth"
-	v1 "message-proxy/internal/api/v1"
-	"message-proxy/internal/service"
 	"net/http"
+	"notify/docs"
+	"notify/internal/api/auth"
+	v1 "notify/internal/api/v1"
+	"notify/internal/service"
+	"strings"
 )
 
 func Router(svc service.Service) *gin.Engine {
@@ -100,9 +101,11 @@ func setService(svc service.Service) gin.HandlerFunc {
 
 func checkIfRequestFromVerifiedSource(svc service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		clientHost := c.Request.Host
+		if strings.HasPrefix(c.Request.URL.Path, "/v1/settings/") {
+			return
+		}
 
-		verified, err := svc.IfHostVerified(clientHost)
+		verified, err := svc.IfHostVerified(c.Request.Host)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "access denied"})
 			return

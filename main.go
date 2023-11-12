@@ -6,11 +6,9 @@ import (
 	sentrylogrus "github.com/getsentry/sentry-go/logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"message-proxy/internal/api"
-	"message-proxy/internal/model"
-	"message-proxy/internal/service"
 	"net/http"
-	"strings"
+	"notify/internal/api"
+	"notify/internal/service"
 	"time"
 )
 
@@ -55,14 +53,6 @@ func main() {
 	}
 
 	svc := service.NewClient()
-
-	_, err = svc.CreateHost(model.HostRequest{
-		Host:  viper.GetString("domain.security.initHost"),
-		Stage: "local",
-	}, "init-host")
-	if err != nil && !strings.Contains(err.Error(), "host already exist in this project") {
-		log.Fatalf("failed to create init hosts: %v", err)
-	}
 
 	router := api.Router(svc)
 	err = router.Run(fmt.Sprintf(":%s", viper.GetString("server.port")))

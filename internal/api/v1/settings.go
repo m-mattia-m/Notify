@@ -3,9 +3,9 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"message-proxy/internal/helper"
-	"message-proxy/internal/model"
 	"net/http"
+	"notify/internal/helper"
+	"notify/internal/model"
 )
 
 type SettingsApiClient struct{}

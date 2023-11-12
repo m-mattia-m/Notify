@@ -1,6 +1,6 @@
 package service
 
-import "message-proxy/internal/model"
+import "notify/internal/model"
 
 func (dbc *DbClient) IfHostVerified(clientHost string) (bool, error) {
 	return dbc.dao.IfHostVerified(clientHost)

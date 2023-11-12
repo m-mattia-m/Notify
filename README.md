@@ -16,26 +16,11 @@ Slack, for example. Notify is a simple, lightweight, and secure way to send mess
 If you use Notify in the self-hosted version, you can specify your own DNS server and verify the hosts. If you do not
 specify anything, a standard DNS server from Google will be used (8.8.8.8:53). To specify your DNS server, configure the
 following in the config.yaml file:
-
+****
 ```yaml
 domain:
   dns:
     verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
-```
-
-### Host
-
-If you are using Notify in the self-hosted version, you must currently specify an initial host (in the future, the
-frontend will be set as the initial host). This host will then be the only one allowed to access it until new ones are
-configured. Note, however, that the initial host is always registered as an allowed host. You can also send requests via
-this host in the future or reuse it in a new project.
-
-To specify an initial host, you must overwrite the following attribute with your desired host.
-
-```yaml
-domain:
-  security:
-    initHost: localhost:8084
 ```
 
 ## Development
@@ -103,8 +88,6 @@ frontend:
   url: http://localhost:3000 # not currently required, but will be added in the future
 
 domain:
-  security:
-    initHost: localhost:8084 # required
   dns:
     verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
 ```

@@ -4,7 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"message-proxy/internal/model"
+	"notify/internal/model"
 )
 
 type Dao interface {

@@ -1,6 +1,6 @@
 package service
 
-import "message-proxy/internal/model"
+import "notify/internal/model"
 
 type Client struct {
 	mailgun MailgunService

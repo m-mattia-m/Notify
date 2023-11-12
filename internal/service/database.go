@@ -8,8 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"message-proxy/internal/dao"
-	"message-proxy/internal/model"
+	"notify/internal/dao"
+	"notify/internal/model"
 )
 
 type DbService interface {
