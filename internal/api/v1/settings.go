@@ -22,6 +22,17 @@ type SettingsApi interface {
 	GetHost(c *gin.Context)
 	VerifyHost(c *gin.Context)
 	DeleteHost(c *gin.Context)
+
+	CreateSlackCredentials(c *gin.Context)
+	UpdateSlackCredentials(c *gin.Context)
+	DeleteSlackCredentials(c *gin.Context)
+	IsSlackCredentialsAlreadySet(c *gin.Context)
+
+	CreateMailgunCredentials(c *gin.Context)
+	GetMailgunCredentials(c *gin.Context)
+	UpdateMailgunCredentials(c *gin.Context)
+	DeleteMailgunCredentials(c *gin.Context)
+	IsMailgunCredentialsAlreadySet(c *gin.Context)
 }
 
 func NewSettingApiClient() SettingsApi {

@@ -24,6 +24,17 @@ type Dao interface {
 	ListProjects(projectFilter model.Project) ([]*model.Project, error)
 	UpdateProject(project model.Project) (*model.Project, error)
 	DeleteProject(projectFilter model.Project) error
+
+	CreateSlackCredential(credentials model.SlackCredentials) error
+	IsSlackCredentialsAlreadySet(credentials model.SlackCredentials) (bool, error)
+	UpdateSlackCredential(credentials model.SlackCredentials) error
+	DeleteSlackCredential(credentials model.SlackCredentials) error
+
+	CreateMailgunCredential(credentials model.MailgunCredentials) (*model.MailgunCredentialsResponse, error)
+	GetMailgunCredential(credentials model.MailgunCredentials) (*model.MailgunCredentialsResponse, error)
+	IsMailgunCredentialsAlreadySet(credentials model.MailgunCredentials) (bool, error)
+	UpdateMailgunCredential(credentials model.MailgunCredentials) (*model.MailgunCredentialsResponse, error)
+	DeleteMailgunCredential(credentials model.MailgunCredentials) error
 }
 
 type DaoClient struct {

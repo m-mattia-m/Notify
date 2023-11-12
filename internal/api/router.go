@@ -78,6 +78,35 @@ func Router(svc service.Service) *gin.Engine {
 					hostGroup.DELETE("/:hostId", settingsApiClient.DeleteHost)
 					hostGroup.PUT("/:hostId/verify", settingsApiClient.VerifyHost)
 				}
+
+				integrationGroup := projectGroup.Group("/:projectId/integrations")
+				{
+					slackGroup := integrationGroup.Group("/slack")
+					{
+						slackGroup.POST("", settingsApiClient.CreateSlackCredentials)
+						slackGroup.GET("/already-set", settingsApiClient.IsSlackCredentialsAlreadySet)
+						slackGroup.PUT("", settingsApiClient.UpdateSlackCredentials)
+						slackGroup.DELETE("", settingsApiClient.DeleteSlackCredentials)
+					}
+					mailgunGroup := integrationGroup.Group("/mailgun")
+					{
+						mailgunGroup.POST("", settingsApiClient.CreateMailgunCredentials)
+						mailgunGroup.GET("", settingsApiClient.GetMailgunCredentials)
+						mailgunGroup.GET("/already-set", settingsApiClient.IsMailgunCredentialsAlreadySet)
+						mailgunGroup.PUT("", settingsApiClient.UpdateMailgunCredentials)
+						mailgunGroup.DELETE("", settingsApiClient.DeleteMailgunCredentials)
+					}
+
+				}
+
+				flowGroup := projectGroup.Group("/flows") // a flow is a notification-workflow which defines
+				{
+					flowGroup.POST("")           // Create a Flow
+					flowGroup.GET("")            // List all flows from a project
+					flowGroup.GET("/:flowId")    // Get a specific flow from a project
+					flowGroup.PUT("/:flowId")    // Update a specific flow from a project
+					flowGroup.DELETE("/:flowId") // Delete a specific flow from a project
+				}
 			}
 		}
 		notificationGroup := v1Group.Group("/notifications")
@@ -91,7 +120,6 @@ func Router(svc service.Service) *gin.Engine {
 	return r
 }
 
-// setService: TODO: if you get here a error or one with the svc, change the param from *service.Client (struct) to *service.Service (interface)
 func setService(svc service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("svc", svc)

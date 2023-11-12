@@ -7,3 +7,7 @@ type HttpError struct {
 type SuccessMessage struct {
 	Message string `json:"message"`
 }
+
+type StateResponse struct {
+	State bool `json:"state"`
+}

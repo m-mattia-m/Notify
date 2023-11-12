@@ -34,6 +34,17 @@ definitions:
       message:
         type: string
     type: object
+  model.MailgunCredentialsRequest:
+    properties:
+      api_key:
+        type: string
+      domain:
+        type: string
+      sender_email:
+        type: string
+      sender_name:
+        type: string
+    type: object
   model.Project:
     properties:
       created_at:
@@ -53,6 +64,16 @@ definitions:
     properties:
       name:
         type: string
+    type: object
+  model.SlackCredentialsRequest:
+    properties:
+      bot_user_o_auth_token:
+        type: string
+    type: object
+  model.StateResponse:
+    properties:
+      state:
+        type: boolean
     type: object
   model.SuccessMessage:
     properties:
@@ -440,6 +461,331 @@ paths:
       - Bearer: []
       tags:
       - Host
+  /settings/projects/{projectId}/integrations/mailgun:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes mailgun-credentials from a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+    get:
+      consumes:
+      - application/json
+      description: Get the credentials from the mailgun-configuration
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+    post:
+      consumes:
+      - application/json
+      description: Create the access data for your Mailgun integration.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: MailgunCredentialsRequest
+        in: body
+        name: MailgunCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.MailgunCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+    put:
+      consumes:
+      - application/json
+      description: Overwrite the token of the Mailgun access of a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: MailgunCredentialsRequest
+        in: body
+        name: MailgunCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.MailgunCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+  /settings/projects/{projectId}/integrations/mailgun/already-set:
+    get:
+      consumes:
+      - application/json
+      description: Indicates whether mailgun has already been implemented in a project.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+  /settings/projects/{projectId}/integrations/slack:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes slack-credentials from a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+    post:
+      consumes:
+      - application/json
+      description: Create the access data for your Slack integration.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: SlackCredentialsRequest
+        in: body
+        name: SlackCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SlackCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+    put:
+      consumes:
+      - application/json
+      description: Overwrite the token of the Slack access of a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: SlackCredentialsRequest
+        in: body
+        name: SlackCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SlackCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+  /settings/projects/{projectId}/integrations/slack/already-set:
+    get:
+      consumes:
+      - application/json
+      description: Indicates whether Slack has already been implemented in a project.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
 schemes:
 - https
 securityDefinitions:

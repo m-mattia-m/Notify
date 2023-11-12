@@ -24,6 +24,17 @@ type Service interface {
 
 	verifyHost(host, verificationToken string) (bool, error)
 	queryTXTVerificationRecord(host, dnsServer string) ([]string, error)
+
+	CreateSlackCredentials(projectId string, credentialsRequest model.SlackCredentialsRequest) (*model.SuccessMessage, error)
+	UpdateSlackCredentials(projectId string, credentialsRequest model.SlackCredentialsRequest) (*model.SuccessMessage, error)
+	DeleteSlackCredentials(projectId string) (*model.SuccessMessage, error)
+	IsSlackCredentialsAlreadySet(projectId string) (bool, error)
+
+	GetMailgunCredentials(projectId string) (*model.MailgunCredentialsResponse, error)
+	CreateMailgunCredentials(projectId string, credentialsRequest model.MailgunCredentialsRequest) (*model.MailgunCredentialsResponse, error)
+	UpdateMailgunCredentials(projectId string, credentialsRequest model.MailgunCredentialsRequest) (*model.MailgunCredentialsResponse, error)
+	DeleteMailgunCredentials(projectId string) (*model.SuccessMessage, error)
+	IsMailgunCredentialsAlreadySet(projectId string) (bool, error)
 }
 
 func NewClient() Service {
