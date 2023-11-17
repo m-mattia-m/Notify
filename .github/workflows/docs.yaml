@@ -70,7 +70,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./public/docs
+          path: ./docs/public
 
   # Deployment job
   deploy:
