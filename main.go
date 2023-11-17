@@ -54,6 +54,8 @@ func main() {
 		log.Fatalln("Error reading config file, %s", err)
 	}
 
+	checkIfRequiredConfigurationAttributesSet()
+
 	err = initLogger()
 	if err != nil {
 		log.Fatalf("failed to create logger: %v", err)
@@ -135,4 +137,49 @@ func initLogger() error {
 
 	log.RegisterExitHandler(func() { sentryHook.Flush(5 * time.Second) })
 	return nil
+}
+
+func checkIfRequiredConfigurationAttributesSet() {
+	if viper.GetString("app.name") == "" {
+		log.Fatal("failed to get required config attribute: 'app.name'")
+	}
+	if viper.GetString("app.env") == "" {
+		log.Fatal("failed to get required config attribute: 'app.env'")
+	}
+	if viper.GetString("server.scheme") == "" {
+		log.Fatal("failed to get required config attribute: 'server.scheme'")
+	}
+	if viper.GetString("server.domain") == "" {
+		log.Fatal("failed to get required config attribute: 'server.domain'")
+	}
+	if viper.GetString("server.port") == "" {
+		log.Fatal("failed to get required config attribute: 'server.port'")
+	}
+	if viper.GetString("server.version") == "" {
+		log.Fatal("failed to get required config attribute: 'server.version'")
+	}
+	if viper.GetString("logging.enable.console") == "" {
+		log.Fatal("failed to get required config attribute: 'logging.enable.console'")
+	}
+	if viper.GetString("logging.enable.sentry") == "" {
+		log.Fatal("failed to get required config attribute: 'logging.enable.sentry'")
+	}
+	if viper.GetString("authentication.oidc.issuer") == "" {
+		log.Fatal("failed to get required config attribute: 'authentication.oidc.issuer'")
+	}
+	if viper.GetString("authentication.oidc.clientId") == "" {
+		log.Fatal("failed to get required config attribute: 'authentication.oidc.clientId'")
+	}
+	if viper.GetString("frontend.url") == "" {
+		log.Fatal("failed to get required config attribute: 'frontend.url'")
+	}
+	if viper.GetString("domain.dns.verifyDns") == "" {
+		log.Fatal("failed to get required config attribute: 'domain.dns.verifyDns'")
+	}
+	if viper.GetString("domain.activity.enable.subject") == "" {
+		log.Fatal("failed to get required config attribute: 'domain.activity.enable.subject'")
+	}
+	if viper.GetString("domain.activity.enable.message") == "" {
+		log.Fatal("failed to get required config attribute: 'failed to get required config attribute'")
+	}
 }
