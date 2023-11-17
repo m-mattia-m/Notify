@@ -23,7 +23,7 @@ func (c *Client) SendNotification(host string, notification model.Notification) 
 		return nil, fmt.Errorf("failed to verify host")
 	}
 
-	if !ifHostInHosts(host, hosts) {
+	if index := ifHostInHosts(host, hosts); index == -1 && !hosts[index].Verified {
 		log.Error(err)
 		return nil, fmt.Errorf("failed to verify host")
 	}
@@ -183,13 +183,13 @@ func (c *Client) logNotificationActivity(activity model.Activity) error {
 	return err
 }
 
-func ifHostInHosts(host string, hosts []*model.Host) bool {
-	for _, currentHost := range hosts {
+func ifHostInHosts(host string, hosts []*model.Host) int {
+	for i, currentHost := range hosts {
 		if currentHost.Host == host {
-			return true
+			return i
 		}
 	}
-	return false
+	return -1
 }
 
 func validateActivityState(notificationError, sourceTypeErr error) string {

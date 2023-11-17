@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"notify/internal/dao"
 	"notify/internal/model"
+	"os"
 )
 
 type DbService interface {
@@ -61,15 +62,40 @@ type DbClient struct {
 }
 
 func NewDbClient() DbService {
-	var uri = fmt.Sprintf("mongodb://%s:%s", viper.GetString("db.mongo.host"), viper.GetString("db.mongo.port"))
+	mongoHost, found := os.LookupEnv("MONGO_HOST")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_HOST' not found")
+	}
+
+	mongoPort, found := os.LookupEnv("MONGO_PORT")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_PORT' not found")
+	}
+
+	mongoUsername, found := os.LookupEnv("MONGO_USERNAME")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_USERNAME' not found")
+	}
+
+	mongoPassword, found := os.LookupEnv("MONGO_PASSWORD")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_PASSWORD' not found")
+	}
+
+	mongoDatabaseName, found := os.LookupEnv("MONGO_DATABASE_NAME")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_DATABASE_NAME' not found")
+	}
+
+	var uri = fmt.Sprintf("mongodb://%s:%s", mongoHost, mongoPort)
 	if viper.GetString("app.env") == "PROD" {
-		uri = fmt.Sprintf("mongodb+srv://%s/?tls=true", viper.GetString("db.mongo.host"))
+		uri = fmt.Sprintf("mongodb+srv://%s/?tls=true", mongoHost)
 	}
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	credentials := options.Credential{
-		Username: viper.GetString("db.mongo.user"),
-		Password: viper.GetString("db.mongo.password"),
+		Username: mongoUsername,
+		Password: mongoPassword,
 	}
 
 	if viper.GetString("app.env") != "PROD" {
@@ -93,6 +119,6 @@ func NewDbClient() DbService {
 	}
 
 	return &DbClient{
-		dao: dao.New(client, viper.GetString("db.mongo.name")),
+		dao: dao.New(client, mongoDatabaseName),
 	}
 }

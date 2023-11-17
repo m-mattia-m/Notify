@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/getsentry/sentry-go"
 	sentrylogrus "github.com/getsentry/sentry-go/logrus"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"net/http"
 	"notify/internal/api"
 	"notify/internal/service"
+	"os"
 	"time"
 )
 
@@ -42,7 +44,12 @@ import (
 // @scope.roles Default Grants
 
 func main() {
-	err := initConfig()
+	err := godotenv.Load()
+	if err != nil {
+		log.Info(".env-file was not found. If you set the env-vars not in a .env-file, you don't have to do anything.")
+	}
+
+	err = initConfig()
 	if err != nil {
 		log.Fatalln("Error reading config file, %s", err)
 	}
@@ -85,8 +92,13 @@ func initLogger() error {
 
 	sentryLevels := []log.Level{log.ErrorLevel, log.FatalLevel, log.PanicLevel, log.InfoLevel}
 
+	sentryLoggingDns, found := os.LookupEnv("SENTRY_LOGGING_DNS")
+	if !found && viper.GetBool("logging.enable.sentry") {
+		log.Fatal("Error during initialization the logging-client: env 'SENTRY_LOGGING_DNS' not found")
+	}
+
 	sentryHook, err := sentrylogrus.New(sentryLevels, sentry.ClientOptions{
-		Dsn: viper.GetString("logging.sentry.dsn"),
+		Dsn: sentryLoggingDns,
 		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
 			// TODO: add sentry-tags
 			//  event.Tags = map[string]string{}

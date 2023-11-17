@@ -47,10 +47,11 @@ func getUser(c *gin.Context) (*model.OidcUser, error) {
 		return nil, err
 	}
 
-	roles, err := helper.GetRoles(claims.UrnZitadelIamOrgProjectRoles)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get roles from bearer-claims %s", err.Error())
-	}
+	// INFO: Currently the roles are not needed. This GetRoles-function works for Zitadel. REMIND: if you activate this, you also need to activate the attributes 'Roles' and 'primaryDomain0' in internal/model/oidc
+	//roles, err := helper.GetRoles(claims.UrnZitadelIamOrgProjectRoles)
+	//if err != nil {
+	//	return nil, fmt.Errorf("failed to get roles from bearer-claims %s", err.Error())
+	//}
 
 	return &model.OidcUser{
 		Email:             claims.Email,
@@ -63,8 +64,8 @@ func getUser(c *gin.Context) (*model.OidcUser, error) {
 		Nickname:          claims.Nickname,
 		PreferredUsername: claims.PreferredUsername,
 		Sub:               claims.Sub,
+		UpdatedAt:         claims.UpdatedAt,
 		//PrimaryDomain:     claims.UrnZitadelIamOrgDomainPrimary,
-		UpdatedAt: claims.UpdatedAt,
-		Roles:     roles,
+		//Roles:     roles,
 	}, nil
 }

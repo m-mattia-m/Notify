@@ -11,9 +11,6 @@ import (
 	"strings"
 )
 
-// GetClaims
-// TODO: There are also possibilities to get the claims out without verifying the token,
-//   - if this is guaranteed at an earlier point.
 func GetClaims(bearer string) (*model.BearerClaims, error) {
 	ctx := context.Background()
 	provider, err := oidc.NewProvider(ctx, viper.GetString("authentication.oidc.issuer"))

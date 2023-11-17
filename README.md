@@ -13,7 +13,7 @@
     <a href="https://goreportcard.com/report/github.com/m-mattia-m/notify">
         <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/m-mattia-m/notify" />
     </a>
-    <a href="https://github.com/zitadel/zitadel/graphs/contributors">
+    <a href="https://github.com/m-mattia-m/notify/graphs/contributors">
         <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/m-mattia-m/notify">
     </a>
 </p>
@@ -133,12 +133,6 @@ authentication:
   oidc:
     issuer: https://instance.zitadel.cloud # required
     clientId: 1234567890@project-name # required
-  zitadel:
-    api: instance.zitadel.cloud:443 # required
-    projectId: 9876543210 # required
-    projectName: Notify # required
-    organizationId: 5432167890 # required
-    organizationName: Notify # required
 
 frontend:
   url: http://localhost:3000 # not currently required, but will be added in the future
