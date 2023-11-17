@@ -56,10 +56,6 @@ jobs:
         uses: actions/configure-pages@v3
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: Debug Information
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of docs directory: $(ls -l ./docs)"
       - name: Build with Hugo
         working-directory: docs
         env:
@@ -74,7 +70,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./public
+          path: ./public/docs
 
   # Deployment job
   deploy:
