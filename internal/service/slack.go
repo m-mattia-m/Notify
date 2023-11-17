@@ -1,9 +1,11 @@
 package service
 
-import log "github.com/sirupsen/logrus"
+import (
+	"github.com/slack-go/slack"
+)
 
 type SlackService interface {
-	SendMessage() error
+	SendMessage(to, message, token string) error
 }
 
 type SlackClient struct{}
@@ -12,7 +14,8 @@ func NewSlackClient() SlackService {
 	return &SlackClient{}
 }
 
-func (sv *SlackClient) SendMessage() error {
-	log.Infof("Sending message via Slack")
-	return nil
+func (sv *SlackClient) SendMessage(to, message, token string) error {
+	api := slack.New(token)
+	_, _, err := api.PostMessage(to, slack.MsgOptionText(message, false))
+	return err
 }

@@ -1,5 +1,103 @@
 basePath: /v1
 definitions:
+  model.Activity:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      message:
+        description: notification message -> can be enabled/disabled in config.yaml
+        type: string
+      note:
+        description: administration/technical information
+        type: string
+      project_id:
+        type: string
+      source_type:
+        description: slack, mailgun
+        type: string
+      state:
+        description: success, failed
+        type: string
+      subject:
+        description: notification subject -> can be enabled/disabled in config.yaml
+        type: string
+      target:
+        description: e.g. slack-channel-id, to-email
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.Flow:
+    properties:
+      active:
+        description: defines if the workflow should be triggered
+        type: boolean
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      message_template:
+        description: 'layout with the message -> Title: \{\{ notification.Subject
+          \}\} \nCustomer creates new support-ticket via frontend-form with the message:
+          \{\{ notification.message \}\}.'
+        type: string
+      message_template_type:
+        description: defines if the template is a TXT or HTML, Markdown, ...
+        type: string
+      name:
+        description: e.g. company notification (slack) || sender notification (mailgun)
+        type: string
+      override_target:
+        description: if true, then override e.g. the configured email with the email
+          from the request
+        type: boolean
+      project_id:
+        description: the projectId a flow belongs to
+        type: string
+      source_type:
+        description: 'message provider via which the message is sent || keyword: mailgun'
+        type: string
+      target:
+        description: 'can be overwritten in the request. e.g. with target-Email ->
+          slack-channel-id || override: sender-email'
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.FlowRequest:
+    properties:
+      active:
+        description: defines if the workflow should be triggered
+        type: boolean
+      message_template:
+        description: 'layout with the message -> Title: \{\{ notification.Subject
+          \}\} \nCustomer creates new support-ticket via frontend-form with the message:
+          \{\{ notification.message \}\}.'
+        type: string
+      message_template_type:
+        description: defines if the template is a TXT or HTML, Markdown, ...
+        type: string
+      name:
+        description: e.g. company notification (slack) || sender notification (mailgun)
+        type: string
+      override_target:
+        description: if true, then override e.g. the configured email with the email
+          from the request
+        type: boolean
+      source_type:
+        description: 'message provider via which the message is sent || keyword: mailgun'
+        type: string
+      target:
+        description: 'can be overwritten in the request. e.g. with target-Email ->
+          slack-channel-id || override: sender-email'
+        type: string
+    type: object
   model.Host:
     properties:
       created_at:
@@ -43,6 +141,17 @@ definitions:
       sender_email:
         type: string
       sender_name:
+        type: string
+    type: object
+  model.Notification:
+    properties:
+      message:
+        type: string
+      project_id:
+        type: string
+      subject:
+        type: string
+      target:
         type: string
     type: object
   model.Project:
@@ -97,6 +206,39 @@ info:
   title: Notify-API
   version: "1.0"
 paths:
+  /notifications:
+    post:
+      consumes:
+      - application/json
+      description: Send a notification
+      parameters:
+      - description: Notification
+        in: body
+        name: Notification
+        required: true
+        schema:
+          $ref: '#/definitions/model.Notification'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      tags:
+      - Notification
   /settings/projects:
     get:
       consumes:
@@ -269,6 +411,280 @@ paths:
       - Bearer: []
       tags:
       - Project
+  /settings/projects/{projectId}/activities:
+    get:
+      consumes:
+      - application/json
+      description: List all activities in a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Activity'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Activity
+  /settings/projects/{projectId}/activities/{activityId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific activity by their id
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Activity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Activity
+  /settings/projects/{projectId}/flows:
+    get:
+      consumes:
+      - application/json
+      description: List all Flows in a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Flow'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+    post:
+      consumes:
+      - application/json
+      description: Create a flow for notifications. In the flow you can define which
+        host should trigger which notifications and who is the default recipient.
+        You can also define a message template as to how the message should look by
+        default (you can replace data dynamically).
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: FlowRequest
+        in: body
+        name: FlowRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.FlowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+  /settings/projects/{projectId}/flows/{flowId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific flow by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: flowId
+        in: path
+        name: flowId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+    get:
+      consumes:
+      - application/json
+      description: Get a specific flow by their id
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: flowId
+        in: path
+        name: flowId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+    put:
+      consumes:
+      - application/json
+      description: Update a specific flow by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: flowId
+        in: path
+        name: flowId
+        required: true
+        type: string
+      - description: FlowRequest
+        in: body
+        name: FlowRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.FlowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
   /settings/projects/{projectId}/hosts:
     get:
       consumes:

@@ -33,6 +33,15 @@ type SettingsApi interface {
 	UpdateMailgunCredentials(c *gin.Context)
 	DeleteMailgunCredentials(c *gin.Context)
 	IsMailgunCredentialsAlreadySet(c *gin.Context)
+
+	CreateFlow(c *gin.Context)
+	ListFlow(c *gin.Context)
+	GetFlow(c *gin.Context)
+	UpdateFlow(c *gin.Context)
+	DeleteFlow(c *gin.Context)
+
+	ListActivities(c *gin.Context)
+	GetActivity(c *gin.Context)
 }
 
 func NewSettingApiClient() SettingsApi {

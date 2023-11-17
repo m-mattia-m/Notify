@@ -35,6 +35,21 @@ type Service interface {
 	UpdateMailgunCredentials(projectId string, credentialsRequest model.MailgunCredentialsRequest) (*model.MailgunCredentialsResponse, error)
 	DeleteMailgunCredentials(projectId string) (*model.SuccessMessage, error)
 	IsMailgunCredentialsAlreadySet(projectId string) (bool, error)
+
+	CreateFlow(projectId string, flowRequest model.FlowRequest) (*model.Flow, error)
+	GetFlow(flowId string, projectId string) (*model.Flow, error)
+	ListFlows(projectId string) ([]*model.Flow, error)
+	UpdateFlow(flowId, projectId string, flowRequest model.FlowRequest) (*model.Flow, error)
+	DeleteFlow(flowId string, projectId string) (*model.SuccessMessage, error)
+	proveMessageTypes(messageType string) bool
+
+	SendNotification(host string, notification model.Notification) (*model.SuccessMessage, error)
+	sendSlackNotification(flow model.Flow, notification model.Notification, credential model.SlackCredentials) error
+	sendMailgunNotification(flow model.Flow, notification model.Notification, credential model.MailgunCredentials) error
+
+	GetActivity(activityId, projectId string) (*model.Activity, error)
+	ListActivities(projectId string) ([]*model.Activity, error)
+	logNotificationActivity(activity model.Activity) error
 }
 
 func NewClient() Service {

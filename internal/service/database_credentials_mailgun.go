@@ -21,3 +21,7 @@ func (dbc *DbClient) UpdateMailgunCredential(credentials model.MailgunCredential
 func (dbc *DbClient) DeleteMailgunCredential(credentials model.MailgunCredentials) error {
 	return dbc.dao.DeleteMailgunCredential(credentials)
 }
+
+func (dbc *DbClient) GetMailgunRevealedCredential(credentials model.MailgunCredentials) (*model.MailgunCredentials, error) {
+	return dbc.dao.GetMailgunRevealedCredential(credentials)
+}

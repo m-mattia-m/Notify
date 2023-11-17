@@ -30,7 +30,6 @@
     </a>
 </p>
 
-
 With Notify, you can send messages securely from your frontend. You don't need your own backend to access Mailgun or
 Slack, for example. Notify is a simple, lightweight, and secure way to send messages from your frontend.
 
@@ -47,6 +46,39 @@ Slack, for example. Notify is a simple, lightweight, and secure way to send mess
 #### Image
 
 @ **TODO**
+
+## Usage
+
+### Flow 
+
+#### Fields
+- `message_template_type` -> `text/plain`, `text/html`
+- `source_type` -> `slack`, `mailgun`
+
+#### Message-Template
+
+You can create a message-template for the notification. For example
+
+`Title: {{subject}}\nHere is your message: {{message}}\Best regards\nNotify`
+
+### Notification request
+
+You can send a notification in this format:
+
+```json5
+{
+  project_id: "12345", // not secret
+  subject: "Important",
+  message: "This is the important message.",
+  target: "mailgun:john.doe@example.com;mailgun:john@doe.com;slack:A1B2C3D4", // optional, only required when no target specified in the flow | define your notification provider
+}
+```
+
+### Credentials
+
+#### Mailgun
+
+- `api_base`: `eu`, `us`
 
 ## Config
 
@@ -123,12 +155,6 @@ OIDC provider, you are welcome to try it with your OIDC provider.
 
 ## Development
 
-### Swagger
-
-To generate the swagger-docs, use the output-directory `./swagger-docs`, as the documentation is stored in the `./docs` folder.
-
-- `swag init --output "./swagger-docs" --parseInternal --parseDependency true`
-
 ### Localhost
 
 If you want to release a localhost in Notify during development, you must use the `local` stage and start
@@ -142,6 +168,14 @@ For example, the host to be registered may look like this:
   "stage": "local"
 }
 ```
+
+## Contribution
+
+### Swagger
+
+To generate the swagger-docs, use the output-directory `./swagger-docs`, as the documentation is stored in the `./docs` folder.
+
+- `swag init --output "./swagger-docs" --parseInternal --parseDependency true`
 
 
 

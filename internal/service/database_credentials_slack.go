@@ -17,3 +17,7 @@ func (dbc *DbClient) UpdateSlackCredential(credentials model.SlackCredentials) e
 func (dbc *DbClient) DeleteSlackCredential(credentials model.SlackCredentials) error {
 	return dbc.dao.DeleteSlackCredential(credentials)
 }
+
+func (dbc *DbClient) GetSlackRevealedCredential(credentialsFilter model.SlackCredentials) (*model.SlackCredentials, error) {
+	return dbc.dao.GetSlackRevealedCredential(credentialsFilter)
+}

@@ -8,10 +8,10 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
-	"notify/docs"
 	"notify/internal/api/auth"
 	v1 "notify/internal/api/v1"
 	"notify/internal/service"
+	docs "notify/swagger-docs"
 	"strings"
 )
 
@@ -99,13 +99,19 @@ func Router(svc service.Service) *gin.Engine {
 
 				}
 
-				flowGroup := projectGroup.Group("/flows") // a flow is a notification-workflow which defines
+				flowGroup := projectGroup.Group("/:projectId/flows") // a flow is a notification-workflow which defines
 				{
-					flowGroup.POST("")           // Create a Flow
-					flowGroup.GET("")            // List all flows from a project
-					flowGroup.GET("/:flowId")    // Get a specific flow from a project
-					flowGroup.PUT("/:flowId")    // Update a specific flow from a project
-					flowGroup.DELETE("/:flowId") // Delete a specific flow from a project
+					flowGroup.POST("", settingsApiClient.CreateFlow)           // Create a Flow
+					flowGroup.GET("", settingsApiClient.ListFlow)              // List all flows from a project
+					flowGroup.GET("/:flowId", settingsApiClient.GetFlow)       // Get a specific flow from a project
+					flowGroup.PUT("/:flowId", settingsApiClient.UpdateFlow)    // Update a specific flow from a project
+					flowGroup.DELETE("/:flowId", settingsApiClient.DeleteFlow) // Delete a specific flow from a project
+				}
+
+				activityGroup := projectGroup.Group("/:projectId/activities")
+				{
+					activityGroup.GET("", settingsApiClient.ListActivities)
+					activityGroup.GET("/:activityId", settingsApiClient.GetActivity)
 				}
 			}
 		}

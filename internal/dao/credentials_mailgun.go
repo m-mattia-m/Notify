@@ -44,13 +44,15 @@ func (dc *DaoClient) CreateMailgunCredential(credentials model.MailgunCredential
 	}
 
 	return &model.MailgunCredentialsResponse{
-		Id:          responseCredentials.Id,
-		ProjectId:   responseCredentials.ProjectId,
-		Domain:      responseCredentials.Domain,
-		SenderEmail: responseCredentials.SenderEmail,
-		SenderName:  responseCredentials.SenderName,
-		CreatedAt:   responseCredentials.CreatedAt,
-		UpdatedAt:   responseCredentials.UpdatedAt,
+		Id:           searchedCredentials.Id,
+		ProjectId:    searchedCredentials.ProjectId,
+		Domain:       searchedCredentials.Domain,
+		ApiBase:      searchedCredentials.ApiBase,
+		SenderEmail:  searchedCredentials.SenderEmail,
+		SenderName:   searchedCredentials.SenderName,
+		ReplyToEmail: searchedCredentials.ReplyToEmail,
+		CreatedAt:    searchedCredentials.CreatedAt,
+		UpdatedAt:    searchedCredentials.UpdatedAt,
 	}, nil
 }
 
@@ -70,13 +72,15 @@ func (dc *DaoClient) GetMailgunCredential(credentials model.MailgunCredentials) 
 	}
 
 	return &model.MailgunCredentialsResponse{
-		Id:          searchedCredentials.Id,
-		ProjectId:   searchedCredentials.ProjectId,
-		Domain:      searchedCredentials.Domain,
-		SenderEmail: searchedCredentials.SenderEmail,
-		SenderName:  searchedCredentials.SenderName,
-		CreatedAt:   searchedCredentials.CreatedAt,
-		UpdatedAt:   searchedCredentials.UpdatedAt,
+		Id:           searchedCredentials.Id,
+		ProjectId:    searchedCredentials.ProjectId,
+		Domain:       searchedCredentials.Domain,
+		ApiBase:      searchedCredentials.ApiBase,
+		SenderEmail:  searchedCredentials.SenderEmail,
+		SenderName:   searchedCredentials.SenderName,
+		ReplyToEmail: searchedCredentials.ReplyToEmail,
+		CreatedAt:    searchedCredentials.CreatedAt,
+		UpdatedAt:    searchedCredentials.UpdatedAt,
 	}, nil
 }
 
@@ -119,19 +123,27 @@ func (dc *DaoClient) UpdateMailgunCredential(credentials model.MailgunCredential
 	if credentials.ApiKey != "" {
 		searchedCredentials.ApiKey = credentials.ApiKey
 	}
+	if credentials.ApiBase != "" {
+		searchedCredentials.ApiBase = credentials.ApiBase
+	}
 	if credentials.SenderEmail != "" {
 		searchedCredentials.SenderEmail = credentials.SenderEmail
 	}
 	if credentials.SenderName != "" {
 		searchedCredentials.SenderName = credentials.SenderName
 	}
+	if credentials.ReplyToEmail != "" {
+		searchedCredentials.ReplyToEmail = credentials.ReplyToEmail
+	}
 
 	updatedTime := time.Now().UTC()
 	update := bson.D{{"$set", bson.D{
 		{"domain", searchedCredentials.Domain},
 		{"api_key", searchedCredentials.ApiKey},
+		{"api_base", searchedCredentials.ApiBase},
 		{"sender_email", searchedCredentials.SenderEmail},
 		{"sender_name", searchedCredentials.SenderName},
+		{"reply_to_email", searchedCredentials.ReplyToEmail},
 		{"updated_at", updatedTime},
 	}}}
 
@@ -141,13 +153,15 @@ func (dc *DaoClient) UpdateMailgunCredential(credentials model.MailgunCredential
 	}
 
 	return &model.MailgunCredentialsResponse{
-		Id:          searchedCredentials.Id,
-		ProjectId:   searchedCredentials.ProjectId,
-		Domain:      searchedCredentials.Domain,
-		SenderEmail: searchedCredentials.SenderEmail,
-		SenderName:  searchedCredentials.SenderName,
-		CreatedAt:   searchedCredentials.CreatedAt,
-		UpdatedAt:   searchedCredentials.UpdatedAt,
+		Id:           searchedCredentials.Id,
+		ProjectId:    searchedCredentials.ProjectId,
+		Domain:       searchedCredentials.Domain,
+		ApiBase:      searchedCredentials.ApiBase,
+		SenderEmail:  searchedCredentials.SenderEmail,
+		SenderName:   searchedCredentials.SenderName,
+		ReplyToEmail: searchedCredentials.ReplyToEmail,
+		CreatedAt:    searchedCredentials.CreatedAt,
+		UpdatedAt:    searchedCredentials.UpdatedAt,
 	}, nil
 }
 
@@ -165,4 +179,22 @@ func (dc *DaoClient) DeleteMailgunCredential(credentials model.MailgunCredential
 	}
 
 	return nil
+}
+
+func (dc *DaoClient) GetMailgunRevealedCredential(credentials model.MailgunCredentials) (*model.MailgunCredentials, error) {
+	ctx := context.Background()
+	filter := bson.M{
+		// There is currently no way to read out the `_id`, but since the `type` and `project_id` are unique, an object is currently identified via them.
+		//"_id":        credentials.Id,
+		"project_id": credentials.ProjectId,
+		"type":       CREDENTIAL_TYPE_MAILGUN,
+	}
+
+	var searchedCredentials *model.MailgunCredentials
+	err := dc.engine.Database(dc.dbName).Collection("credential").FindOne(ctx, filter).Decode(&searchedCredentials)
+	if err != nil {
+		return nil, err
+	}
+
+	return searchedCredentials, nil
 }

@@ -20,6 +20,57 @@
     "host": "api.makenotify.io",
     "basePath": "/v1",
     "paths": {
+        "/notifications": {
+            "post": {
+                "description": "Send a notification",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notification"
+                ],
+                "parameters": [
+                    {
+                        "description": "Notification",
+                        "name": "Notification",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Notification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            }
+        },
         "/settings/projects": {
             "get": {
                 "security": [
@@ -266,6 +317,430 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.SuccessMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/projects/{projectId}/activities": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "List all activities in a project",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Activity"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Activity"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/projects/{projectId}/activities/{activityId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get a specific activity by their id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Activity"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "activityId",
+                        "name": "activityId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Activity"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/projects/{projectId}/flows": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "List all Flows in a project",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flow"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Flow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Create a flow for notifications. In the flow you can define which host should trigger which notifications and who is the default recipient. You can also define a message template as to how the message should look by default (you can replace data dynamically).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flow"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "FlowRequest",
+                        "name": "FlowRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FlowRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Flow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            }
+        },
+        "/settings/projects/{projectId}/flows/{flowId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Get a specific flow by their id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flow"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "flowId",
+                        "name": "flowId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Flow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Update a specific flow by their id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flow"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "flowId",
+                        "name": "flowId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "FlowRequest",
+                        "name": "FlowRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FlowRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Flow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HttpError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Delete a specific flow by their id.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Flow"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "projectId",
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "flowId",
+                        "name": "flowId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Flow"
                         }
                     },
                     "400": {
@@ -1102,6 +1577,132 @@
         }
     },
     "definitions": {
+        "model.Activity": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message": {
+                    "description": "notification message -\u003e can be enabled/disabled in config.yaml",
+                    "type": "string"
+                },
+                "note": {
+                    "description": "administration/technical information",
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "source_type": {
+                    "description": "slack, mailgun",
+                    "type": "string"
+                },
+                "state": {
+                    "description": "success, failed",
+                    "type": "string"
+                },
+                "subject": {
+                    "description": "notification subject -\u003e can be enabled/disabled in config.yaml",
+                    "type": "string"
+                },
+                "target": {
+                    "description": "e.g. slack-channel-id, to-email",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Flow": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "description": "defines if the workflow should be triggered",
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "message_template": {
+                    "description": "layout with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
+                    "type": "string"
+                },
+                "message_template_type": {
+                    "description": "defines if the template is a TXT or HTML, Markdown, ...",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "e.g. company notification (slack) || sender notification (mailgun)",
+                    "type": "string"
+                },
+                "override_target": {
+                    "description": "if true, then override e.g. the configured email with the email from the request",
+                    "type": "boolean"
+                },
+                "project_id": {
+                    "description": "the projectId a flow belongs to",
+                    "type": "string"
+                },
+                "source_type": {
+                    "description": "message provider via which the message is sent || keyword: mailgun",
+                    "type": "string"
+                },
+                "target": {
+                    "description": "can be overwritten in the request. e.g. with target-Email -\u003e slack-channel-id || override: sender-email",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.FlowRequest": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "description": "defines if the workflow should be triggered",
+                    "type": "boolean"
+                },
+                "message_template": {
+                    "description": "layout with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
+                    "type": "string"
+                },
+                "message_template_type": {
+                    "description": "defines if the template is a TXT or HTML, Markdown, ...",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "e.g. company notification (slack) || sender notification (mailgun)",
+                    "type": "string"
+                },
+                "override_target": {
+                    "description": "if true, then override e.g. the configured email with the email from the request",
+                    "type": "boolean"
+                },
+                "source_type": {
+                    "description": "message provider via which the message is sent || keyword: mailgun",
+                    "type": "string"
+                },
+                "target": {
+                    "description": "can be overwritten in the request. e.g. with target-Email -\u003e slack-channel-id || override: sender-email",
+                    "type": "string"
+                }
+            }
+        },
         "model.Host": {
             "type": "object",
             "properties": {
@@ -1167,6 +1768,23 @@
                     "type": "string"
                 },
                 "sender_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Notification": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "target": {
                     "type": "string"
                 }
             }

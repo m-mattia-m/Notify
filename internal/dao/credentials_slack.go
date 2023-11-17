@@ -96,3 +96,18 @@ func (dc *DaoClient) DeleteSlackCredential(credentials model.SlackCredentials) e
 
 	return nil
 }
+
+func (dc *DaoClient) GetSlackRevealedCredential(credentialsFilter model.SlackCredentials) (*model.SlackCredentials, error) {
+	ctx := context.Background()
+	filter := bson.M{
+		"project_id": credentialsFilter.ProjectId,
+		"type":       CREDENTIAL_TYPE_SLACK,
+	}
+	var searchedCredentials *model.SlackCredentials
+	err := dc.engine.Database(dc.dbName).Collection("credential").FindOne(ctx, filter).Decode(&searchedCredentials)
+	if err != nil {
+		return nil, err
+	}
+
+	return searchedCredentials, nil
+}
