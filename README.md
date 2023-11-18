@@ -5,7 +5,7 @@
         <img alt="Licence" src="https://img.shields.io/github/license/m-mattia-m/notify"/>
     </a>
     <a href="https://github.com/m-mattia-m/notify/actions" style="text-decoration: inherit;">
-        <img alt="GitHub Workflow Status (with event)"  src="https://img.shields.io/github/actions/workflow/status/m-mattia-m/notify/deploy.yaml">
+        <img alt="GitHub Workflow Status (with event)"  src="https://img.shields.io/github/actions/workflow/status/m-mattia-m/notify/docker-build-publish.yaml">
     </a>
     <a href="https://github.com/m-mattia-m/notify/releases" style="text-decoration: inherit;">
         <img alt="Release" src="https://badgen.net/github/release/m-mattia-m/notify/stable" />
