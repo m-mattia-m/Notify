@@ -12,7 +12,7 @@ type Flow struct {
 	SourceType          string             `json:"source_type" bson:"source_type"`                     // message provider via which the message is sent || keyword: mailgun
 	Target              string             `json:"target" bson:"target"`                               // can be overwritten in the request. e.g. with target-Email -> slack-channel-id || override: sender-email
 	OverrideTarget      bool               `json:"override_target" bson:"override_target"`             // if true, then override e.g. the configured email with the email from the request
-	MessageTemplate     string             `json:"message_template" bson:"message_template"`           // layout with the message -> Title: \{\{ notification.Subject \}\} \nCustomer creates new support-ticket via frontend-form with the message: \{\{ notification.message \}\}.
+	MessageTemplate     string             `json:"message_template" bson:"message_template"`           // layouts with the message -> Title: \{\{ notification.Subject \}\} \nCustomer creates new support-ticket via frontend-form with the message: \{\{ notification.message \}\}.
 	MessageTemplateType string             `json:"message_template_type" bson:"message_template_type"` // defines if the template is a TXT or HTML, Markdown, ...
 	Active              bool               `json:"active" bson:"active"`                               // defines if the workflow should be triggered
 	UpdatedAt           *time.Time         `json:"updated_at" bson:"updated_at"`
@@ -25,7 +25,7 @@ type FlowRequest struct {
 	SourceType          string `json:"source_type" bson:"source_type"`                     // message provider via which the message is sent || keyword: mailgun
 	Target              string `json:"target" bson:"target"`                               // can be overwritten in the request. e.g. with target-Email -> slack-channel-id || override: sender-email
 	OverrideTarget      bool   `json:"override_target" bson:"override_target"`             // if true, then override e.g. the configured email with the email from the request
-	MessageTemplate     string `json:"message_template" bson:"message_template"`           // layout with the message -> Title: \{\{ notification.Subject \}\} \nCustomer creates new support-ticket via frontend-form with the message: \{\{ notification.message \}\}.
+	MessageTemplate     string `json:"message_template" bson:"message_template"`           // layouts with the message -> Title: \{\{ notification.Subject \}\} \nCustomer creates new support-ticket via frontend-form with the message: \{\{ notification.message \}\}.
 	MessageTemplateType string `json:"message_template_type" bson:"message_template_type"` // defines if the template is a TXT or HTML, Markdown, ...
 	Active              bool   `json:"active" bson:"active"`                               // defines if the workflow should be triggered
 }

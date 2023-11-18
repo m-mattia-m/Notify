@@ -1641,7 +1641,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "message_template": {
-                    "description": "layout with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
+                    "description": "layouts with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
                     "type": "string"
                 },
                 "message_template_type": {
@@ -1681,7 +1681,7 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "message_template": {
-                    "description": "layout with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
+                    "description": "layouts with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
                     "type": "string"
                 },
                 "message_template_type": {

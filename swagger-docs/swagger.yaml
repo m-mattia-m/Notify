@@ -43,7 +43,7 @@ definitions:
       id:
         type: string
       message_template:
-        description: 'layout with the message -> Title: \{\{ notification.Subject
+        description: 'layouts with the message -> Title: \{\{ notification.Subject
           \}\} \nCustomer creates new support-ticket via frontend-form with the message:
           \{\{ notification.message \}\}.'
         type: string
@@ -76,7 +76,7 @@ definitions:
         description: defines if the workflow should be triggered
         type: boolean
       message_template:
-        description: 'layout with the message -> Title: \{\{ notification.Subject
+        description: 'layouts with the message -> Title: \{\{ notification.Subject
           \}\} \nCustomer creates new support-ticket via frontend-form with the message:
           \{\{ notification.message \}\}.'
         type: string
