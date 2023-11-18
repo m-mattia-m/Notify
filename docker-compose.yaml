@@ -4,19 +4,14 @@ services:
   mongo:
     image: docker.io/mongo:latest
     environment:
-      # ROOT USER
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
-      - MONGO_CUSTOM_USERNAME=${MONGO_CUSTOM_USER}
-      - MONGO_CUSTOM_PASSWORD=${MONGO_CUSTOM_PASSWORD}
     volumes:
       # database storage
       - mongo-data:/data
-      # init scripts
-      - ./db-migration/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     ports:
-      - "27018:27017"
+      - "27017:27017"
     hostname: mongo
     restart: "no"
 
