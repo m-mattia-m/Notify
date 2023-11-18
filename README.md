@@ -167,22 +167,22 @@ You can create a flow in your project. Replace `<project-id>` in the URL with yo
 
 POST `/v1/settings/projects/<project-id>/flows`
 
-```json lines {filename="body"}
+```yaml
 {
-  // defines if a flow is action and can be triggered
+  # defines if a flow is action and can be triggered
   "active": true,
-  // here you can place your
+  # here you can place your
   "message_template": "Hi,\n\nYou have received a message about '{{subject}}' from your contact form: \n\n{{message}",
-  // defines the type of the message: text/html, text/plain
+  # defines the type of the message: text/html, text/plain
   "message_template_type": "text/plain",
-  // you need to set a name for your flow. e.g. team-slack-notification
+  # you need to set a name for your flow. e.g. team-slack-notification
   "name": "Contact form notification",
-  // defines if the message can override your default target
+  # defines if the message can override your default target
   "override_target": false,
-  // defines where you want to be notified. e.g. slack, mailgun
+  # defines where you want to be notified. e.g. slack, mailgun
   "source_type": "mailgun",
-  // here you can past your default receiver email for mailgun or your Slack channel id 
-  // (add the integration to your channel before connection Notify with it)
+  # here you can past your default receiver email for mailgun or your Slack channel id 
+  # (add the integration to your channel before connection Notify with it)
   "target": "you@example.com"
 }
 ```
@@ -194,22 +194,22 @@ with your flow-id.
 
 PUT `/v1/settings/projects/<project-id>/flows/<flow-id>`
 
-```json lines {filename="body"}
+```yaml
 {
-  // defines if a flow is action and can be triggered
+  # defines if a flow is action and can be triggered
   "active": true,
-  // here you can place your
+  # here you can place your
   "message_template": "Hi,\n\nYou have received a message about '{{subject}}' from your contact form: \n\n{{message}",
-  // defines the type of the message: text/html, text/plain
+  # defines the type of the message: text/html, text/plain
   "message_template_type": "text/plain",
-  // you need to set a name for your flow. e.g. team-slack-notification
+  # you need to set a name for your flow. e.g. team-slack-notification
   "name": "Contact form notification",
-  // defines if the message can override your default target
+  # defines if the message can override your default target
   "override_target": false,
-  // defines where you want to be notified. e.g. slack, mailgun
+  # defines where you want to be notified. e.g. slack, mailgun
   "source_type": "mailgun",
-  // here you can past your default receiver email for mailgun or your Slack channel id 
-  // (add the integration to your channel before connection Notify with it)
+  # here you can past your default receiver email for mailgun or your Slack channel id 
+  # (add the integration to your channel before connection Notify with it)
   "target": "you@example.com"
 }
 ```
@@ -369,7 +369,7 @@ and get the activities.
 
 All activities will be logged in the mongo database.
 
-```json lines {filename="activity-log.json"}
+```json
 {
   "project_id": "abc123",
   "state": "success",
@@ -388,7 +388,7 @@ All activities will be logged in the mongo database.
 }
 ```
 
-```json lines {filename="activity-log.json"}
+```json
 {
   "project_id": "abc123",
   "state": "failed",
@@ -423,12 +423,12 @@ You can only send notifications from a verified host but you don't need a JWT to
 
 POST `/v1/notifications`
 
-```json lines {filename="body"}
+```yaml
 {
   "project_id": "abc123",
   "subject": "Contact form",
   "message": "Hi, I need some technical help.",
-  // you can also remove this attribute
+  # you can also remove this attribute
   "target": ""
 }
 ```
@@ -440,7 +440,7 @@ but note, that for example mailgun send one mail per recipient. When you want to
 separate them with a Semicolon (;). You need also set for which provider a target is (also when only one or the same
 provider are configured). Possible overrides looks like this:
 
-```json lines {filename="target"}
+```json
 {
   "target": "mailgun:john.dow@example.com;mailgun:support@company.com;slack:A1B2C3;slack:D4E5F6"
 }
@@ -450,11 +450,11 @@ provider are configured). Possible overrides looks like this:
 
 ## Config file
 
-Create a config.yaml file in the project `root`, in `./configs/` or in `./config/`.
+Create a *config.yaml* file in the project `root`, in `./configs/` or in `./config/`.
 
 All possible configurations are listed here:
 
-```yaml  {filename="./configs/config.yaml or ./config.yaml"}
+```yaml
 app:
   name: notify # required
   env: DEV # required
@@ -489,11 +489,11 @@ domain:
 
 ## Environment
 
-Create a .env file in the project `root`.
+Create a *.env* file in the project `root`.
 
 All possible configurations are listed here:
 
-```env {filename=".env"}
+```env
 MONGO_HOST=localhost # required
 MONGO_PORT=27017 # required
 MONGO_DATABASE_NAME=notify # required
@@ -517,7 +517,7 @@ For example, the host to be registered may look like this:
 
 ```yaml
 {
-  "host": "localhost:8084", // Note that `localhost` is required with a colon
+  "host": "localhost:8084", # Note that `localhost` is required with a colon
   "stage": "local"
 }
 ```
