@@ -7,10 +7,12 @@ import (
 	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"message-proxy/docs"
-	v1 "message-proxy/internal/api/v1"
-	"message-proxy/internal/service"
 	"net/http"
+	"notify/internal/api/auth"
+	v1 "notify/internal/api/v1"
+	"notify/internal/service"
+	docs "notify/swagger-docs"
+	"strings"
 )
 
 func Router(svc service.Service) *gin.Engine {
@@ -49,28 +51,67 @@ func Router(svc service.Service) *gin.Engine {
 		c.JSON(http.StatusOK, "👋 OK")
 	})
 
+	r.GET("/", func(c *gin.Context) {
+		c.Redirect(http.StatusFound, "/v1/swagger/index.html")
+	})
+
 	notificationApiClient := v1.NewNotificationApiClient()
+	settingsApiClient := v1.NewSettingApiClient()
 
 	v1Group := r.Group("/v1")
 	{
-		settingsGroup := v1Group.Group("/settings")
+		settingsGroup := v1Group.Group("/settings", auth.Authenticate)
 		{
 			projectGroup := settingsGroup.Group("/projects")
 			{
-				projectGroup.POST("")              // Create Project
-				projectGroup.GET("")               // List Projects
-				projectGroup.GET("/:projectId")    // Get Project
-				projectGroup.PUT("/:projectId")    // Update Project
-				projectGroup.DELETE("/:projectId") // Delete Project
+				projectGroup.POST("", settingsApiClient.CreateProject)
+				projectGroup.GET("", settingsApiClient.ListProjects)
+				projectGroup.GET("/:projectId", settingsApiClient.GetProject)
+				projectGroup.PUT("/:projectId", settingsApiClient.UpdateProject)
+				projectGroup.DELETE("/:projectId", settingsApiClient.DeleteProject)
 
 				hostGroup := projectGroup.Group("/:projectId/hosts")
 				{
-					hostGroup.POST("")           // add host
-					hostGroup.GET("")            // list hosts
-					hostGroup.GET("/:hostId")    // get host
-					hostGroup.PUT("/:hostId")    // update host
-					hostGroup.DELETE("/:hostId") // delete host
-					hostGroup.PUT("/:hostId/verify")
+					hostGroup.POST("", settingsApiClient.CreateHost)
+					hostGroup.GET("", settingsApiClient.ListHosts)
+					hostGroup.GET("/:hostId", settingsApiClient.GetHost)
+					hostGroup.DELETE("/:hostId", settingsApiClient.DeleteHost)
+					hostGroup.PUT("/:hostId/verify", settingsApiClient.VerifyHost)
+				}
+
+				integrationGroup := projectGroup.Group("/:projectId/integrations")
+				{
+					slackGroup := integrationGroup.Group("/slack")
+					{
+						slackGroup.POST("", settingsApiClient.CreateSlackCredentials)
+						slackGroup.GET("/already-set", settingsApiClient.IsSlackCredentialsAlreadySet)
+						slackGroup.PUT("", settingsApiClient.UpdateSlackCredentials)
+						slackGroup.DELETE("", settingsApiClient.DeleteSlackCredentials)
+					}
+					mailgunGroup := integrationGroup.Group("/mailgun")
+					{
+						mailgunGroup.POST("", settingsApiClient.CreateMailgunCredentials)
+						mailgunGroup.GET("", settingsApiClient.GetMailgunCredentials)
+						mailgunGroup.GET("/already-set", settingsApiClient.IsMailgunCredentialsAlreadySet)
+						mailgunGroup.PUT("", settingsApiClient.UpdateMailgunCredentials)
+						mailgunGroup.DELETE("", settingsApiClient.DeleteMailgunCredentials)
+					}
+
+				}
+
+				flowGroup := projectGroup.Group("/:projectId/flows") // a flow is a notification-workflow which defines
+				{
+					flowGroup.POST("", settingsApiClient.CreateFlow)           // Create a Flow
+					flowGroup.GET("", settingsApiClient.ListFlow)              // List all flows from a project
+					flowGroup.GET("/:flowId", settingsApiClient.GetFlow)       // Get a specific flow from a project
+					flowGroup.PUT("/:flowId", settingsApiClient.UpdateFlow)    // Update a specific flow from a project
+					flowGroup.DELETE("/:flowId", settingsApiClient.DeleteFlow) // Delete a specific flow from a project
+				}
+
+				activityGroup := projectGroup.Group("/:projectId/activities")
+				{
+					activityGroup.GET("", settingsApiClient.ListActivities)
+					activityGroup.GET("/:activityId", settingsApiClient.GetActivity)
 				}
 			}
 		}
@@ -85,7 +126,6 @@ func Router(svc service.Service) *gin.Engine {
 	return r
 }
 
-// setService: TODO: if you get here a error or one with the svc, change the param from *service.Client (struct) to *service.Service (interface)
 func setService(svc service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("svc", svc)
@@ -95,16 +135,17 @@ func setService(svc service.Service) gin.HandlerFunc {
 
 func checkIfRequestFromVerifiedSource(svc service.Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		clientIP := c.ClientIP()
-		clientHost := c.Request.Host
+		if !strings.HasPrefix(c.Request.URL.Path, "/v1/notification/") {
+			return
+		}
 
-		verified, err := svc.IfHostOrIpVerified(clientIP, clientHost)
+		verified, err := svc.IfHostVerified(c.Request.Host)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "access denied"})
 			return
 		}
 
-		if verified {
+		if !verified {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "access denied"})
 			return
 		}

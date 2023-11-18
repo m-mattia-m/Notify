@@ -1,0 +1,1212 @@
+basePath: /v1
+definitions:
+  model.Activity:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      message:
+        description: notification message -> can be enabled/disabled in config.yaml
+        type: string
+      note:
+        description: administration/technical information
+        type: string
+      project_id:
+        type: string
+      source_type:
+        description: slack, mailgun
+        type: string
+      state:
+        description: success, failed
+        type: string
+      subject:
+        description: notification subject -> can be enabled/disabled in config.yaml
+        type: string
+      target:
+        description: e.g. slack-channel-id, to-email
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.Flow:
+    properties:
+      active:
+        description: defines if the workflow should be triggered
+        type: boolean
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      message_template:
+        description: 'layouts with the message -> Title: \{\{ notification.Subject
+          \}\} \nCustomer creates new support-ticket via frontend-form with the message:
+          \{\{ notification.message \}\}.'
+        type: string
+      message_template_type:
+        description: defines if the template is a TXT or HTML, Markdown, ...
+        type: string
+      name:
+        description: e.g. company notification (slack) || sender notification (mailgun)
+        type: string
+      override_target:
+        description: if true, then override e.g. the configured email with the email
+          from the request
+        type: boolean
+      project_id:
+        description: the projectId a flow belongs to
+        type: string
+      source_type:
+        description: 'message provider via which the message is sent || keyword: mailgun'
+        type: string
+      target:
+        description: 'can be overwritten in the request. e.g. with target-Email ->
+          slack-channel-id || override: sender-email'
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.FlowRequest:
+    properties:
+      active:
+        description: defines if the workflow should be triggered
+        type: boolean
+      message_template:
+        description: 'layouts with the message -> Title: \{\{ notification.Subject
+          \}\} \nCustomer creates new support-ticket via frontend-form with the message:
+          \{\{ notification.message \}\}.'
+        type: string
+      message_template_type:
+        description: defines if the template is a TXT or HTML, Markdown, ...
+        type: string
+      name:
+        description: e.g. company notification (slack) || sender notification (mailgun)
+        type: string
+      override_target:
+        description: if true, then override e.g. the configured email with the email
+          from the request
+        type: boolean
+      source_type:
+        description: 'message provider via which the message is sent || keyword: mailgun'
+        type: string
+      target:
+        description: 'can be overwritten in the request. e.g. with target-Email ->
+          slack-channel-id || override: sender-email'
+        type: string
+    type: object
+  model.Host:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      host:
+        type: string
+      id:
+        type: string
+      project_id:
+        type: string
+      stage:
+        description: DEV, TEST, ABT, PROD -> user can create own stages
+        type: string
+      updated_at:
+        type: string
+      verified:
+        type: boolean
+      verify_token:
+        type: string
+    type: object
+  model.HostRequest:
+    properties:
+      host:
+        type: string
+      stage:
+        type: string
+    type: object
+  model.HttpError:
+    properties:
+      message:
+        type: string
+    type: object
+  model.MailgunCredentialsRequest:
+    properties:
+      api_key:
+        type: string
+      domain:
+        type: string
+      sender_email:
+        type: string
+      sender_name:
+        type: string
+    type: object
+  model.Notification:
+    properties:
+      message:
+        type: string
+      project_id:
+        type: string
+      subject:
+        type: string
+      target:
+        type: string
+    type: object
+  model.Project:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  model.ProjectRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  model.SlackCredentialsRequest:
+    properties:
+      bot_user_o_auth_token:
+        type: string
+    type: object
+  model.StateResponse:
+    properties:
+      state:
+        type: boolean
+    type: object
+  model.SuccessMessage:
+    properties:
+      message:
+        type: string
+    type: object
+externalDocs:
+  description: Docs
+  url: https://docs.makenotify.io
+host: api.makenotify.io
+info:
+  contact:
+    email: develop@makenotify.io
+    name: API Support
+  description: This is the API for Notify. With Notify you can securely send messages
+    from the frontend to your chosen provider to send messages.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://makenotify.io/terms-of-use/
+  title: Notify-API
+  version: "1.0"
+paths:
+  /notifications:
+    post:
+      consumes:
+      - application/json
+      description: Send a notification
+      parameters:
+      - description: Notification
+        in: body
+        name: Notification
+        required: true
+        schema:
+          $ref: '#/definitions/model.Notification'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      tags:
+      - Notification
+  /settings/projects:
+    get:
+      consumes:
+      - application/json
+      description: List all projects from the signed-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Project'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+    post:
+      consumes:
+      - application/json
+      description: Creates a project from the request body which is also sent and
+        return this project.
+      parameters:
+      - description: ProjectRequest
+        in: body
+        name: ProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+  /settings/projects/{projectId}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a project by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+    get:
+      consumes:
+      - application/json
+      description: Returns a project by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+    put:
+      consumes:
+      - application/json
+      description: Updates a project by their id from the request body which is also
+        sent and return this project.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: ProjectRequest
+        in: body
+        name: ProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Project
+  /settings/projects/{projectId}/activities:
+    get:
+      consumes:
+      - application/json
+      description: List all activities in a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Activity'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Activity
+  /settings/projects/{projectId}/activities/{activityId}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific activity by their id
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: activityId
+        in: path
+        name: activityId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Activity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Activity
+  /settings/projects/{projectId}/flows:
+    get:
+      consumes:
+      - application/json
+      description: List all Flows in a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Flow'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+    post:
+      consumes:
+      - application/json
+      description: Create a flow for notifications. In the flow you can define which
+        host should trigger which notifications and who is the default recipient.
+        You can also define a message template as to how the message should look by
+        default (you can replace data dynamically).
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: FlowRequest
+        in: body
+        name: FlowRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.FlowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+  /settings/projects/{projectId}/flows/{flowId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific flow by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: flowId
+        in: path
+        name: flowId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+    get:
+      consumes:
+      - application/json
+      description: Get a specific flow by their id
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: flowId
+        in: path
+        name: flowId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+    put:
+      consumes:
+      - application/json
+      description: Update a specific flow by their id.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: flowId
+        in: path
+        name: flowId
+        required: true
+        type: string
+      - description: FlowRequest
+        in: body
+        name: FlowRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.FlowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Flow'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Flow
+  /settings/projects/{projectId}/hosts:
+    get:
+      consumes:
+      - application/json
+      description: List all hosts from the given project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Host'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+    post:
+      consumes:
+      - application/json
+      description: Creates a host from the request body and the projectId which is
+        also sent and return this host.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: HostRequest
+        in: body
+        name: HostRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.HostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Host'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+  /settings/projects/{projectId}/hosts/{hostId}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a host by their id and their projectId.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: hostId
+        in: path
+        name: hostId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+    get:
+      consumes:
+      - application/json
+      description: Returns a host by their id and their projectId.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: hostId
+        in: path
+        name: hostId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Host'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+  /settings/projects/{projectId}/hosts/{hostId}/verify:
+    put:
+      consumes:
+      - application/json
+      description: trigger a verification from the given host
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: hostId
+        in: path
+        name: hostId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Host'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - Host
+  /settings/projects/{projectId}/integrations/mailgun:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes mailgun-credentials from a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+    get:
+      consumes:
+      - application/json
+      description: Get the credentials from the mailgun-configuration
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+    post:
+      consumes:
+      - application/json
+      description: Create the access data for your Mailgun integration.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: MailgunCredentialsRequest
+        in: body
+        name: MailgunCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.MailgunCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+    put:
+      consumes:
+      - application/json
+      description: Overwrite the token of the Mailgun access of a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: MailgunCredentialsRequest
+        in: body
+        name: MailgunCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.MailgunCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+  /settings/projects/{projectId}/integrations/mailgun/already-set:
+    get:
+      consumes:
+      - application/json
+      description: Indicates whether mailgun has already been implemented in a project.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationMailgun
+  /settings/projects/{projectId}/integrations/slack:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes slack-credentials from a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+    post:
+      consumes:
+      - application/json
+      description: Create the access data for your Slack integration.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: SlackCredentialsRequest
+        in: body
+        name: SlackCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SlackCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+    put:
+      consumes:
+      - application/json
+      description: Overwrite the token of the Slack access of a project
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      - description: SlackCredentialsRequest
+        in: body
+        name: SlackCredentialsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SlackCredentialsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+  /settings/projects/{projectId}/integrations/slack/already-set:
+    get:
+      consumes:
+      - application/json
+      description: Indicates whether Slack has already been implemented in a project.
+      parameters:
+      - description: projectId
+        in: path
+        name: projectId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.StateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.HttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.HttpError'
+      security:
+      - Bearer: []
+      tags:
+      - IntegrationSlack
+schemes:
+- https
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

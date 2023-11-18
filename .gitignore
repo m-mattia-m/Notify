@@ -17,5 +17,6 @@ configs/zitadel-service-user-key.json
 /.air.toml
 /tmp/build-errors.log
 /tmp/main
-/.idea/message-proxy.iml
+/.idea/notify.iml
 /.idea/modules.xml
+/message-proxy/.idea/modules.xml

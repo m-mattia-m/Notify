@@ -8,11 +8,53 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"message-proxy/internal/dao"
+	"notify/internal/dao"
+	"notify/internal/model"
+	"os"
 )
 
 type DbService interface {
-	IfHostOrIpVerified(clientIP, clientHost string) (bool, error)
+	IfHostVerified(clientHost string) (bool, error)
+	IfHostInThisProjectAlreadyExist(host model.Host) (bool, error)
+	CreateHost(host model.Host) (*model.Host, error)
+	GetHost(hostFilter model.Host) (*model.Host, error)
+	ListHosts(hostFilter model.Host) ([]*model.Host, error)
+	UpdateHost(host model.Host) (*model.Host, error)
+	DeleteHost(hostFilter model.Host) error
+
+	IfProjectWithThisNameAlreadyExist(project model.Project) (bool, error)
+	CreateProject(project model.Project) (*model.Project, error)
+	GetProject(projectFilter model.Project) (*model.Project, error)
+	ListProjects(projectFilter model.Project) ([]*model.Project, error)
+	UpdateProject(project model.Project) (*model.Project, error)
+	DeleteProject(projectFilter model.Project) error
+
+	GetCredential(credentials model.Credential) (*model.Credential, error)
+	ListCredential(credentialFilter model.Credential) ([]*model.Credential, error)
+
+	CreateSlackCredential(credentials model.SlackCredentials) error
+	IsSlackCredentialsAlreadySet(credentials model.SlackCredentials) (bool, error)
+	UpdateSlackCredential(credentials model.SlackCredentials) error
+	DeleteSlackCredential(credentials model.SlackCredentials) error
+	GetSlackRevealedCredential(credentialsFilter model.SlackCredentials) (*model.SlackCredentials, error)
+
+	CreateMailgunCredential(credentials model.MailgunCredentials) (*model.MailgunCredentialsResponse, error)
+	GetMailgunCredential(credentials model.MailgunCredentials) (*model.MailgunCredentialsResponse, error)
+	IsMailgunCredentialsAlreadySet(credentials model.MailgunCredentials) (bool, error)
+	UpdateMailgunCredential(credentials model.MailgunCredentials) (*model.MailgunCredentialsResponse, error)
+	DeleteMailgunCredential(credentials model.MailgunCredentials) error
+	GetMailgunRevealedCredential(credentials model.MailgunCredentials) (*model.MailgunCredentials, error)
+
+	IfFlowInThisProjectAlreadyExist(flowFilter model.Flow) (bool, error)
+	CreateFlow(flow model.Flow) (*model.Flow, error)
+	GetFlow(flowFilter model.Flow) (*model.Flow, error)
+	ListFlows(flowFilter model.Flow) ([]*model.Flow, error)
+	UpdateFlow(flow model.Flow) (*model.Flow, error)
+	DeleteFlow(flowFilter model.Flow) error
+
+	CreateActivity(activity model.Activity) error
+	GetActivity(activityFilter model.Activity) (*model.Activity, error)
+	ListActivities(activityFilter model.Activity) ([]*model.Activity, error)
 }
 
 type DbClient struct {
@@ -20,15 +62,40 @@ type DbClient struct {
 }
 
 func NewDbClient() DbService {
-	var uri = fmt.Sprintf("mongodb://%s:%s", viper.GetString("db.mongo.host"), viper.GetString("db.mongo.port"))
+	mongoHost, found := os.LookupEnv("MONGO_HOST")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_HOST' not found")
+	}
+
+	mongoPort, found := os.LookupEnv("MONGO_PORT")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_PORT' not found")
+	}
+
+	mongoUsername, found := os.LookupEnv("MONGO_USERNAME")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_USERNAME' not found")
+	}
+
+	mongoPassword, found := os.LookupEnv("MONGO_PASSWORD")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_PASSWORD' not found")
+	}
+
+	mongoDatabaseName, found := os.LookupEnv("MONGO_DATABASE_NAME")
+	if !found {
+		log.Fatal("Error starting mongoDB-client: env 'MONGO_DATABASE_NAME' not found")
+	}
+
+	var uri = fmt.Sprintf("mongodb://%s:%s", mongoHost, mongoPort)
 	if viper.GetString("app.env") == "PROD" {
-		uri = fmt.Sprintf("mongodb+srv://%s/?tls=true", viper.GetString("db.mongo.host"))
+		uri = fmt.Sprintf("mongodb+srv://%s/?tls=true", mongoHost)
 	}
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	credentials := options.Credential{
-		Username: viper.GetString("db.mongo.user"),
-		Password: viper.GetString("db.mongo.password"),
+		Username: mongoUsername,
+		Password: mongoPassword,
 	}
 
 	if viper.GetString("app.env") != "PROD" {
@@ -52,6 +119,6 @@ func NewDbClient() DbService {
 	}
 
 	return &DbClient{
-		dao: dao.New(client, viper.GetString("db.mongo.name")),
+		dao: dao.New(client, mongoDatabaseName),
 	}
 }

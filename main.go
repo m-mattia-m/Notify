@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"github.com/getsentry/sentry-go"
 	sentrylogrus "github.com/getsentry/sentry-go/logrus"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"message-proxy/internal/api"
-	"message-proxy/internal/service"
 	"net/http"
+	"notify/internal/api"
+	"notify/internal/service"
+	"os"
 	"time"
 )
 
@@ -42,10 +44,17 @@ import (
 // @scope.roles Default Grants
 
 func main() {
-	err := initConfig()
+	err := godotenv.Load()
+	if err != nil {
+		log.Info(".env-file was not found. If you set the env-vars not in a .env-file, you don't have to do anything.")
+	}
+
+	err = initConfig()
 	if err != nil {
 		log.Fatalln("Error reading config file, %s", err)
 	}
+
+	checkIfRequiredConfigurationAttributesSet()
 
 	err = initLogger()
 	if err != nil {
@@ -53,8 +62,6 @@ func main() {
 	}
 
 	svc := service.NewClient()
-
-	log.Info("info for sentry")
 
 	router := api.Router(svc)
 	err = router.Run(fmt.Sprintf(":%s", viper.GetString("server.port")))
@@ -65,6 +72,8 @@ func main() {
 
 func initConfig() error {
 	viper.AddConfigPath("./configs/")
+	viper.AddConfigPath("./config/")
+	viper.AddConfigPath("./")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
@@ -80,10 +89,19 @@ func initLogger() error {
 	log.SetLevel(log.DebugLevel)
 	log.SetOutput(log.StandardLogger().Out)
 
+	if !viper.GetBool("logging.enable.sentry") {
+		return nil
+	}
+
 	sentryLevels := []log.Level{log.ErrorLevel, log.FatalLevel, log.PanicLevel, log.InfoLevel}
 
+	sentryLoggingDns, found := os.LookupEnv("SENTRY_LOGGING_DNS")
+	if !found && viper.GetBool("logging.enable.sentry") {
+		log.Fatal("Error during initialization the logging-client: env 'SENTRY_LOGGING_DNS' not found")
+	}
+
 	sentryHook, err := sentrylogrus.New(sentryLevels, sentry.ClientOptions{
-		Dsn: viper.GetString("logging.sentry.dsn"),
+		Dsn: sentryLoggingDns,
 		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
 			// TODO: add sentry-tags
 			//  event.Tags = map[string]string{}
@@ -120,4 +138,49 @@ func initLogger() error {
 
 	log.RegisterExitHandler(func() { sentryHook.Flush(5 * time.Second) })
 	return nil
+}
+
+func checkIfRequiredConfigurationAttributesSet() {
+	if viper.GetString("app.name") == "" {
+		log.Fatal("failed to get required config attribute: 'app.name'")
+	}
+	if viper.GetString("app.env") == "" {
+		log.Fatal("failed to get required config attribute: 'app.env'")
+	}
+	if viper.GetString("server.scheme") == "" {
+		log.Fatal("failed to get required config attribute: 'server.scheme'")
+	}
+	if viper.GetString("server.domain") == "" {
+		log.Fatal("failed to get required config attribute: 'server.domain'")
+	}
+	if viper.GetString("server.port") == "" {
+		log.Fatal("failed to get required config attribute: 'server.port'")
+	}
+	if viper.GetString("server.version") == "" {
+		log.Fatal("failed to get required config attribute: 'server.version'")
+	}
+	if viper.GetString("logging.enable.console") == "" {
+		log.Fatal("failed to get required config attribute: 'logging.enable.console'")
+	}
+	if viper.GetString("logging.enable.sentry") == "" {
+		log.Fatal("failed to get required config attribute: 'logging.enable.sentry'")
+	}
+	if viper.GetString("authentication.oidc.issuer") == "" {
+		log.Fatal("failed to get required config attribute: 'authentication.oidc.issuer'")
+	}
+	if viper.GetString("authentication.oidc.clientId") == "" {
+		log.Fatal("failed to get required config attribute: 'authentication.oidc.clientId'")
+	}
+	if viper.GetString("frontend.url") == "" {
+		log.Fatal("failed to get required config attribute: 'frontend.url'")
+	}
+	if viper.GetString("domain.dns.verifyDns") == "" {
+		log.Fatal("failed to get required config attribute: 'domain.dns.verifyDns'")
+	}
+	if viper.GetString("domain.activity.enable.subject") == "" {
+		log.Fatal("failed to get required config attribute: 'domain.activity.enable.subject'")
+	}
+	if viper.GetString("domain.activity.enable.message") == "" {
+		log.Fatal("failed to get required config attribute: 'failed to get required config attribute'")
+	}
 }
