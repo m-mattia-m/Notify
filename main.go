@@ -86,8 +86,10 @@ func initConfig() error {
 func initLogger() error {
 	log.SetFormatter(&log.JSONFormatter{})
 	log.SetReportCaller(true)
-	log.SetLevel(log.DebugLevel)
 	log.SetOutput(log.StandardLogger().Out)
+	if viper.GetBool("logging.enable.debug") {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	if !viper.GetBool("logging.enable.sentry") {
 		return nil
@@ -103,9 +105,6 @@ func initLogger() error {
 	sentryHook, err := sentrylogrus.New(sentryLevels, sentry.ClientOptions{
 		Dsn: sentryLoggingDns,
 		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
-			// TODO: add sentry-tags
-			//  event.Tags = map[string]string{}
-
 			event.Environment = viper.GetString("app.env")
 
 			if hint.Context != nil {
