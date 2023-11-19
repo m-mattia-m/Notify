@@ -5,7 +5,7 @@
         <img alt="Licence" src="https://img.shields.io/github/license/m-mattia-m/notify"/>
     </a>
     <a href="https://github.com/m-mattia-m/notify/actions" style="text-decoration: inherit;">
-        <img alt="GitHub Workflow Status (with event)"  src="https://img.shields.io/github/actions/workflow/status/m-mattia-m/notify/deploy.yaml">
+        <img alt="GitHub Workflow Status (with event)"  src="https://img.shields.io/github/actions/workflow/status/m-mattia-m/notify/docker-build-publish.yaml">
     </a>
     <a href="https://github.com/m-mattia-m/notify/releases" style="text-decoration: inherit;">
         <img alt="Release" src="https://badgen.net/github/release/m-mattia-m/notify/stable" />
@@ -65,11 +65,234 @@ Notify is Open Source! So you can host Notify for yourself.
 
 ## Docker-compose
 
-> ⌛ Coming soon
+You need to add the environment and the configuration. You should have this folder structure:
 
-## K8s-Manifest
+- config
+  - config.yaml
+- .env
+- docker-compose.yaml
 
-> ⌛️ Coming soon
+> If you use the docker-compose on a server, you need to add a reverse proxy for a secure communication.
+
+```yaml {filename="docker-compose.yaml"}
+version: '3.8'
+
+services:
+  mongo:
+    image: docker.io/mongo:7.0.3
+    hostname: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongo-data:/data
+    restart: "no"
+    networks:
+      - notify
+
+  notify:
+    image: ghcr.io/m-mattia-m/notify:v1.0.1
+    hostname: notify
+    environment:
+      - MONGO_HOST=mongo # use here the docker service name (if you don't change anything here it's 'mongo')
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - SENTRY_LOGGING_DNS=${SENTRY_LOGGING_DNS}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/config.yaml:/app/config.yaml
+    restart: "no"
+    depends_on:
+      - mongo
+    networks:
+      - notify
+
+volumes:
+  mongo-data: { }
+
+networks:
+  notify:
+    driver: bridge
+```
+
+## Kubernetes-Manifest
+
+Here you will find all K8s manifests from the namespace to the ingress. Create a DNS A-record with your hostname
+e.g. `api.notify.example.com` and add the IP-address from your load-balancer as the target.
+
+```yaml {filename="k8s-manifest-namespace.yaml"}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: notify
+```
+
+```yaml {filename="k8s-manifest-config-map.yaml"}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: notify-configuration
+  namespace: notify
+data:
+  config.yaml: |-
+    app:
+      name: notify
+      env: PROD
+
+    server:
+      scheme: http
+      domain: api.notify.example.com
+      port: 8080
+      version: v1
+
+    logging:
+      enable:
+        console: true
+        sentry: true
+
+    authentication:
+      oidc:
+        issuer: https://your-instance.zitadel.cloud
+        clientId: 12345@notify
+
+    frontend:
+      url: https://notify.example.com
+
+    domain:
+      dns:
+        verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
+      activity:
+        enable:
+          subject: true
+          message: true
+```
+
+```yaml {filename="k8s-manifest-secret.yaml"}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: notify-secrets
+  namespace: notify
+data: # all values must be base64 encoded
+  MONGO_HOST: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
+  MONGO_PORT: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
+  MONGO_DATABASE_NAME: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
+  MONGO_USERNAME: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
+  MONGO_PASSWORD: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
+  SENTRY_LOGGING_DNS: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
+```
+
+```yaml {filename="k8s-manifest-deployment.yaml"}
+# Here the application itself is created
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify
+  namespace: notify
+spec:
+  replicas: 1 # set the number of pods you want
+  selector:
+    matchLabels:
+      app: notify
+  template:
+    metadata:
+      labels:
+        app: notify
+    spec:
+      containers:
+        - name: notify
+          image: ghcr.io/m-mattia-m/notify:v1.0.1
+          env:
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_HOST
+            - name: MONGO_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_PORT
+            - name: MONGO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_DATABASE_NAME
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_USERNAME
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_PASSWORD
+            - name: SENTRY_LOGGING_DNS
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: SENTRY_LOGGING_DNS
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: notify-config
+            items:
+              - key: config.yaml
+                path: config.yaml
+```
+
+```yaml {filename="k8s-manifest-service.yaml"}
+# here is the service-creation to expose the app in the namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: notify
+  namespace: notify
+spec:
+  selector:
+    app.kubernetes.io/name: notify
+    app: notify
+  ports:
+    - name: http
+      port: 80 # external port
+      targetPort: 8080 # internal port (check if in the config.yaml server.port is the same)
+```
+
+```yaml {filename="k8s-manifest-ingress.yaml"}
+# here is the route-creation to expose the app-service to the internet
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: notify
+  namespace: notify
+  annotations:
+    cert-manager.io/issuer: letsencrypt-nginx
+spec:
+  rules:
+    - host: notify.formtion.app # set here your domain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: notify
+                port:
+                  number: 80
+  ingressClassName: nginx
+```
 
 # Configuration
 
@@ -167,22 +390,22 @@ You can create a flow in your project. Replace `<project-id>` in the URL with yo
 
 POST `/v1/settings/projects/<project-id>/flows`
 
-```json lines {filename="body"}
+```yaml
 {
-  // defines if a flow is action and can be triggered
+  # defines if a flow is action and can be triggered
   "active": true,
-  // here you can place your
+  # here you can place your
   "message_template": "Hi,\n\nYou have received a message about '{{subject}}' from your contact form: \n\n{{message}",
-  // defines the type of the message: text/html, text/plain
+  # defines the type of the message: text/html, text/plain
   "message_template_type": "text/plain",
-  // you need to set a name for your flow. e.g. team-slack-notification
+  # you need to set a name for your flow. e.g. team-slack-notification
   "name": "Contact form notification",
-  // defines if the message can override your default target
+  # defines if the message can override your default target
   "override_target": false,
-  // defines where you want to be notified. e.g. slack, mailgun
+  # defines where you want to be notified. e.g. slack, mailgun
   "source_type": "mailgun",
-  // here you can past your default receiver email for mailgun or your Slack channel id 
-  // (add the integration to your channel before connection Notify with it)
+  # here you can past your default receiver email for mailgun or your Slack channel id 
+  # (add the integration to your channel before connection Notify with it)
   "target": "you@example.com"
 }
 ```
@@ -194,22 +417,22 @@ with your flow-id.
 
 PUT `/v1/settings/projects/<project-id>/flows/<flow-id>`
 
-```json lines {filename="body"}
+```yaml
 {
-  // defines if a flow is action and can be triggered
+  # defines if a flow is action and can be triggered
   "active": true,
-  // here you can place your
+  # here you can place your
   "message_template": "Hi,\n\nYou have received a message about '{{subject}}' from your contact form: \n\n{{message}",
-  // defines the type of the message: text/html, text/plain
+  # defines the type of the message: text/html, text/plain
   "message_template_type": "text/plain",
-  // you need to set a name for your flow. e.g. team-slack-notification
+  # you need to set a name for your flow. e.g. team-slack-notification
   "name": "Contact form notification",
-  // defines if the message can override your default target
+  # defines if the message can override your default target
   "override_target": false,
-  // defines where you want to be notified. e.g. slack, mailgun
+  # defines where you want to be notified. e.g. slack, mailgun
   "source_type": "mailgun",
-  // here you can past your default receiver email for mailgun or your Slack channel id 
-  // (add the integration to your channel before connection Notify with it)
+  # here you can past your default receiver email for mailgun or your Slack channel id 
+  # (add the integration to your channel before connection Notify with it)
   "target": "you@example.com"
 }
 ```
@@ -369,7 +592,7 @@ and get the activities.
 
 All activities will be logged in the mongo database.
 
-```json lines {filename="activity-log.json"}
+```json
 {
   "project_id": "abc123",
   "state": "success",
@@ -388,7 +611,7 @@ All activities will be logged in the mongo database.
 }
 ```
 
-```json lines {filename="activity-log.json"}
+```json
 {
   "project_id": "abc123",
   "state": "failed",
@@ -423,12 +646,12 @@ You can only send notifications from a verified host but you don't need a JWT to
 
 POST `/v1/notifications`
 
-```json lines {filename="body"}
+```yaml
 {
   "project_id": "abc123",
   "subject": "Contact form",
   "message": "Hi, I need some technical help.",
-  // you can also remove this attribute
+  # you can also remove this attribute
   "target": ""
 }
 ```
@@ -440,7 +663,7 @@ but note, that for example mailgun send one mail per recipient. When you want to
 separate them with a Semicolon (;). You need also set for which provider a target is (also when only one or the same
 provider are configured). Possible overrides looks like this:
 
-```json lines {filename="target"}
+```json
 {
   "target": "mailgun:john.dow@example.com;mailgun:support@company.com;slack:A1B2C3;slack:D4E5F6"
 }
@@ -450,11 +673,11 @@ provider are configured). Possible overrides looks like this:
 
 ## Config file
 
-Create a config.yaml file in the project `root`, in `./configs/` or in `./config/`.
+Create a *config.yaml* file in the project `root`, in `./configs/` or in `./config/`.
 
 All possible configurations are listed here:
 
-```yaml  {filename="./configs/config.yaml or ./config.yaml"}
+```yaml
 app:
   name: notify # required
   env: DEV # required
@@ -489,11 +712,11 @@ domain:
 
 ## Environment
 
-Create a .env file in the project `root`.
+Create a *.env* file in the project `root`.
 
 All possible configurations are listed here:
 
-```env {filename=".env"}
+```env
 MONGO_HOST=localhost # required
 MONGO_PORT=27017 # required
 MONGO_DATABASE_NAME=notify # required
@@ -517,7 +740,7 @@ For example, the host to be registered may look like this:
 
 ```yaml
 {
-  "host": "localhost:8084", // Note that `localhost` is required with a colon
+  "host": "localhost:8084", # Note that `localhost` is required with a colon
   "stage": "local"
 }
 ```
