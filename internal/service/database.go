@@ -11,7 +11,6 @@ import (
 	"notify/internal/dao"
 	"notify/internal/model"
 	"os"
-	"strings"
 )
 
 type DbService interface {
@@ -88,19 +87,14 @@ func NewDbClient() DbService {
 		log.Fatal("Error starting mongoDB-client: env 'MONGO_DATABASE_NAME' not found")
 	}
 
-	mongoTlsActive, found := os.LookupEnv("MONGO_TLS_ACTIVE")
-	if !found {
-		log.Info("env 'MONGO_DATABASE_NAME' not found, if this is not needed, you can ignore this info")
-	}
-
 	var uri = fmt.Sprintf("mongodb://%s", mongoHost)
-	if strings.Contains(mongoHost, "+srv") {
+	if viper.GetBool("database.mongo.srv") {
 		uri = fmt.Sprintf("mongodb+srv://%s", mongoHost)
 	}
 	if mongoPort != "" {
 		uri = fmt.Sprintf("%s:%s", uri, mongoPort)
 	}
-	if mongoTlsActive == "true" {
+	if viper.GetBool("database.mongo.tls") {
 		uri = fmt.Sprintf("%s/?tls=true", uri)
 	}
 
@@ -110,8 +104,8 @@ func NewDbClient() DbService {
 		Password: mongoPassword,
 	}
 
-	if viper.GetString("app.env") != "PROD" {
-		credentials.AuthMechanism = "SCRAM-SHA-256"
+	if authMechanism := viper.GetString("database.mongo.authMechanism"); authMechanism != "" {
+		credentials.AuthMechanism = authMechanism
 	}
 
 	opts := options.Client().

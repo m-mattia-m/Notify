@@ -279,7 +279,7 @@ metadata:
     cert-manager.io/issuer: letsencrypt-nginx
 spec:
   rules:
-    - host: notify.formtion.app # set here your domain
+    - host: api.notify.example.com # set here your domain
       http:
         paths:
           - path: /
@@ -686,6 +686,12 @@ server:
   port: 8080 # required
   version: v1 # required: in the most cases always 'v1'
 
+database:
+   mongo:
+      authMechanism: SCRAM-SHA-256 # optional
+      srv: true # optional
+      tls: true # is only required when your DB use TLS.
+
 logging:
   enable:
     console: true # required
@@ -720,7 +726,6 @@ MONGO_PORT=27017 # required
 MONGO_DATABASE_NAME=notify # required
 MONGO_USERNAME=admin # required
 MONGO_PASSWORD=admin!password # required
-MONGO_TLS_ACTIVE=true # only required when mongoDB use TLS
 
 # only required when logging.enable.sentry in the config-file is true.
 SENTRY_LOGGING_DNS=https://1245@asdf.ingest.sentry.io/67890
