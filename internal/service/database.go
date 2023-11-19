@@ -11,6 +11,7 @@ import (
 	"notify/internal/dao"
 	"notify/internal/model"
 	"os"
+	"strings"
 )
 
 type DbService interface {
@@ -69,7 +70,7 @@ func NewDbClient() DbService {
 
 	mongoPort, found := os.LookupEnv("MONGO_PORT")
 	if !found {
-		log.Fatal("Error starting mongoDB-client: env 'MONGO_PORT' not found")
+		log.Info("env 'MONGO_PORT' not found, if this is not needed, you can ignore this info")
 	}
 
 	mongoUsername, found := os.LookupEnv("MONGO_USERNAME")
@@ -87,9 +88,20 @@ func NewDbClient() DbService {
 		log.Fatal("Error starting mongoDB-client: env 'MONGO_DATABASE_NAME' not found")
 	}
 
-	var uri = fmt.Sprintf("mongodb://%s:%s", mongoHost, mongoPort)
-	if viper.GetString("app.env") == "PROD" {
-		uri = fmt.Sprintf("mongodb+srv://%s/?tls=true", mongoHost)
+	mongoTlsActive, found := os.LookupEnv("MONGO_TLS_ACTIVE")
+	if !found {
+		log.Info("env 'MONGO_DATABASE_NAME' not found, if this is not needed, you can ignore this info")
+	}
+
+	var uri = fmt.Sprintf("mongodb://%s", mongoHost)
+	if strings.Contains(mongoHost, "+srv") {
+		uri = fmt.Sprintf("mongodb+srv://%s", mongoHost)
+	}
+	if mongoPort != "" {
+		uri = fmt.Sprintf("%s:%s", uri, mongoPort)
+	}
+	if mongoTlsActive == "true" {
+		uri = fmt.Sprintf("%s/?tls=true", uri)
 	}
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)

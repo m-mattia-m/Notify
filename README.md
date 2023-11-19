@@ -102,6 +102,7 @@ services:
       - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_TLS_ACTIVE=${MONGO_TLS_ACTIVE}
       - SENTRY_LOGGING_DNS=${SENTRY_LOGGING_DNS}
     ports:
       - "8080:8080"
@@ -209,16 +210,13 @@ spec:
         - name: notify
           image: ghcr.io/m-mattia-m/notify:v1.0.1
           env:
+            - name: MONGO_TLS_ACTIVE
+              value: "true"
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:
                   name: notify-secrets
                   key: MONGO_HOST
-            - name: MONGO_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: notify-secrets
-                  key: MONGO_PORT
             - name: MONGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -229,7 +227,7 @@ spec:
                 secretKeyRef:
                   name: notify-secrets
                   key: MONGO_USERNAME
-            - name: MONGO_PASSWORD
+            - name: MONGO_PASSWORD # is not required
               valueFrom:
                 secretKeyRef:
                   name: notify-secrets
@@ -241,12 +239,12 @@ spec:
                   key: SENTRY_LOGGING_DNS
           volumeMounts:
             - name: config-volume
-              mountPath: /config/config.yaml
+              mountPath: ./app/config.yaml
               subPath: config.yaml
       volumes:
         - name: config-volume
           configMap:
-            name: notify-config
+            name: notify-configuration
             items:
               - key: config.yaml
                 path: config.yaml
@@ -722,6 +720,7 @@ MONGO_PORT=27017 # required
 MONGO_DATABASE_NAME=notify # required
 MONGO_USERNAME=admin # required
 MONGO_PASSWORD=admin!password # required
+MONGO_TLS_ACTIVE=true # only required when mongoDB use TLS
 
 # only required when logging.enable.sentry in the config-file is true.
 SENTRY_LOGGING_DNS=https://1245@asdf.ingest.sentry.io/67890

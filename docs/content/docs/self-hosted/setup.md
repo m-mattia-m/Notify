@@ -52,6 +52,7 @@ services:
       - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_TLS_ACTIVE=${MONGO_TLS_ACTIVE}
       - SENTRY_LOGGING_DNS=${SENTRY_LOGGING_DNS}
     ports:
       - "8080:8080"
@@ -159,6 +160,8 @@ spec:
         - name: notify
           image: ghcr.io/m-mattia-m/notify:v1.0.1
           env:
+            - name: MONGO_TLS_ACTIVE
+              value: "true"
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:

@@ -23,7 +23,7 @@ func (c *Client) SendNotification(host string, notification model.Notification) 
 		return nil, fmt.Errorf("failed to verify host")
 	}
 
-	if index := ifHostInHosts(host, hosts); index == -1 && !hosts[index].Verified {
+	if index := ifHostInHosts(host, hosts); hosts == nil || (index == -1 && !hosts[index].Verified) {
 		log.Error(err)
 		return nil, fmt.Errorf("failed to verify host")
 	}
