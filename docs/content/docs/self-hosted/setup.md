@@ -196,7 +196,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: notify-config
+            name: notify-configuration
             items:
               - key: config.yaml
                 path: config.yaml
