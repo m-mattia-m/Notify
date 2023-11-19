@@ -164,11 +164,6 @@ spec:
                 secretKeyRef:
                   name: notify-secrets
                   key: MONGO_HOST
-            - name: MONGO_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: notify-secrets
-                  key: MONGO_PORT
             - name: MONGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -179,7 +174,7 @@ spec:
                 secretKeyRef:
                   name: notify-secrets
                   key: MONGO_USERNAME
-            - name: MONGO_PASSWORD
+            - name: MONGO_PASSWORD # is not required
               valueFrom:
                 secretKeyRef:
                   name: notify-secrets
@@ -191,7 +186,7 @@ spec:
                   key: SENTRY_LOGGING_DNS
           volumeMounts:
             - name: config-volume
-              mountPath: /config/config.yaml
+              mountPath: ./app/config.yaml
               subPath: config.yaml
       volumes:
         - name: config-volume
