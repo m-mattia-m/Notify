@@ -174,9 +174,6 @@ func checkIfRequiredConfigurationAttributesSet() {
 	if viper.GetString("frontend.url") == "" {
 		log.Fatal("failed to get required config attribute: 'frontend.url'")
 	}
-	if viper.GetString("domain.dns.verifyDns") == "" {
-		log.Fatal("failed to get required config attribute: 'domain.dns.verifyDns'")
-	}
 	if viper.GetString("domain.activity.enable.subject") == "" {
 		log.Fatal("failed to get required config attribute: 'domain.activity.enable.subject'")
 	}

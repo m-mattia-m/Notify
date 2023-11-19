@@ -52,12 +52,16 @@ Create a .env file in the project `root`.
 
 All possible configurations are listed here:
 
+- `MONGO_TLS_ACTIVE` is only required when your DB use TLS.
+- `MONGO_PORT` is optional, if your MongoDb host don't need a port, you can remove this attribute.
+
 ```env {filename=".env"}
 MONGO_HOST=localhost # required
-MONGO_PORT=27017 # required
+MONGO_PORT=27017 # optional
 MONGO_DATABASE_NAME=notify # required
 MONGO_USERNAME=admin # required
 MONGO_PASSWORD=admin!password # required
+MONGO_TLS_ACTIVE=true # optional
 
 # only required when logging.enable.sentry in the config-file is true.
 SENTRY_LOGGING_DNS=https://1245@asdf.ingest.sentry.io/67890
