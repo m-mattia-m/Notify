@@ -279,7 +279,7 @@ metadata:
     cert-manager.io/issuer: letsencrypt-nginx
 spec:
   rules:
-    - host: notify.formtion.app # set here your domain
+    - host: api.notify.example.com # set here your domain
       http:
         paths:
           - path: /
