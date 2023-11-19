@@ -24,10 +24,16 @@ server:
   port: 8080 # required
   version: v1 # required: in the most cases always 'v1'
 
+database:
+  mongo:
+    authMechanism: SCRAM-SHA-256 # optional
+    srv: true  # optional
+    tls: true  # optional
+
 logging:
   enable:
-    console: true # required
-    sentry: true # required
+    console: true # optional
+    sentry: true # optional
 
 authentication:
   oidc:
@@ -42,8 +48,8 @@ domain:
     verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
   activity:
     enable:
-      subject: true # required
-      message: true # required
+      subject: true # optional
+      message: true # optional
 ```
 
 ## Environment
@@ -52,7 +58,6 @@ Create a .env file in the project `root`.
 
 All possible configurations are listed here:
 
-- `MONGO_TLS_ACTIVE` is only required when your DB use TLS.
 - `MONGO_PORT` is optional, if your MongoDb host don't need a port, you can remove this attribute.
 
 ```env {filename=".env"}
@@ -61,7 +66,6 @@ MONGO_PORT=27017 # optional
 MONGO_DATABASE_NAME=notify # required
 MONGO_USERNAME=admin # required
 MONGO_PASSWORD=admin!password # required
-MONGO_TLS_ACTIVE=true # optional
 
 # only required when logging.enable.sentry in the config-file is true.
 SENTRY_LOGGING_DNS=https://1245@asdf.ingest.sentry.io/67890

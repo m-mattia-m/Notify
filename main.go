@@ -36,13 +36,6 @@ import (
 // @externalDocs.description  Docs
 // @externalDocs.url          https://docs.makenotify.io
 
-// @tokenUrl https://notify-asdf.zitadel.cloud/oauth/v2/token
-// @authorizationUrl https://notify-asdf.zitadel.cloud/oauth/v2/authorize
-// @scope.openid Default Grants
-// @scope.profile Default Grants
-// @scope.email Default Grants
-// @scope.roles Default Grants
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {

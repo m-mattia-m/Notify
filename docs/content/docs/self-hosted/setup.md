@@ -52,7 +52,6 @@ services:
       - MONGO_DATABASE_NAME=${MONGO_DATABASE_NAME}
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_TLS_ACTIVE=${MONGO_TLS_ACTIVE}
       - SENTRY_LOGGING_DNS=${SENTRY_LOGGING_DNS}
     ports:
       - "8080:8080"
@@ -77,12 +76,16 @@ networks:
 Here you will find all K8s manifests from the namespace to the ingress. Create a DNS A-record with your hostname
 e.g. `api.notify.example.com` and add the IP-address from your load-balancer as the target.
 
+### Namespace
+
 ```yaml {filename="k8s-manifest-namespace.yaml"}
 apiVersion: v1
 kind: Namespace
 metadata:
   name: notify
 ```
+
+### Config map
 
 ```yaml {filename="k8s-manifest-config-map.yaml"}
 apiVersion: v1
@@ -107,6 +110,12 @@ data:
         console: true
         sentry: true
 
+    database:
+      mongo:
+        authMechanism: SCRAM-SHA-256
+        srv: true
+        tls: true
+
     authentication:
       oidc:
         issuer: https://your-instance.zitadel.cloud
@@ -117,12 +126,14 @@ data:
 
     domain:
       dns:
-        verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
+        verifyDns: 8.8.8.8:53 # this is optional
       activity:
         enable:
           subject: true
           message: true
 ```
+
+### Secret
 
 ```yaml {filename="k8s-manifest-secret.yaml"}
 apiVersion: v1
@@ -138,6 +149,8 @@ data: # all values must be base64 encoded
   MONGO_PASSWORD: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
   SENTRY_LOGGING_DNS: YXNkZi10ZXN0LXNlY3JldA== # base54 encoded value
 ```
+
+### Deployment
 
 ```yaml {filename="k8s-manifest-deployment.yaml"}
 # Here the application itself is created
@@ -160,13 +173,16 @@ spec:
         - name: notify
           image: ghcr.io/m-mattia-m/notify:v1.0.1
           env:
-            - name: MONGO_TLS_ACTIVE
-              value: "true"
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:
                   name: notify-secrets
                   key: MONGO_HOST
+            - name: MONGO_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: notify-secrets
+                  key: MONGO_PORT
             - name: MONGO_DATABASE_NAME
               valueFrom:
                 secretKeyRef:
@@ -200,6 +216,8 @@ spec:
                 path: config.yaml
 ```
 
+### Service
+
 ```yaml {filename="k8s-manifest-service.yaml"}
 # here is the service-creation to expose the app in the namespace
 apiVersion: v1
@@ -210,12 +228,15 @@ metadata:
 spec:
   selector:
     app.kubernetes.io/name: notify
-    app: notify
   ports:
     - name: http
       port: 80 # external port
       targetPort: 8080 # internal port (check if in the config.yaml server.port is the same)
+  selector:
+    app: notify
 ```
+
+### Ingress
 
 ```yaml {filename="k8s-manifest-ingress.yaml"}
 # here is the route-creation to expose the app-service to the internet
@@ -229,7 +250,7 @@ metadata:
     cert-manager.io/issuer: letsencrypt-nginx
 spec:
   rules:
-    - host: api.notify.example.com # set here your domain
+    - host: notify-api.example.com
       http:
         paths:
           - path: /

@@ -13,8 +13,8 @@ You can add a .env-file or you also can add the environment variables directly i
 ```yaml {filename="./configs/config.yaml"}
 database:
   mongo:
-    authMechanism: SCRAM-SHA-256
-    srv: true
+    authMechanism: SCRAM-SHA-256 # optional
+    srv: true # optional
     tls: true # is only required when your DB use TLS.
 ```
 
