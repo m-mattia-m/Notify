@@ -2,8 +2,8 @@ FROM node:21-alpine3.17 as builder
 
 WORKDIR /app
 
-COPY package.json ./
-COPY package-lock.json ./
+COPY ./web/package.json ./
+COPY ./web/package-lock.json ./
 
 RUN npm install
 

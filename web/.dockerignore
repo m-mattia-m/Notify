@@ -7,3 +7,9 @@
 **/.env
 **/.env.dist
 **/.gitignore
+
+!package.json
+!package-lock.json
+
+!**/package.json
+!**/package-lock.json
