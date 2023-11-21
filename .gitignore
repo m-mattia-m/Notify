@@ -20,3 +20,8 @@ configs/zitadel-service-user-key.json
 /.idea/notify.iml
 /.idea/modules.xml
 /message-proxy/.idea/modules.xml
+
+
+/web/node_modules
+/web/.nuxt
+/web/.env
