@@ -1,0 +1,9 @@
+**/.nuxt
+**/.docker
+**/.output
+**/node_modules
+**/openapi:generate
+**/.dockerignore
+**/.env
+**/.env.dist
+**/.gitignore
