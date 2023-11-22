@@ -1,4 +1,4 @@
-name: Build Hugo site
+name: Build Hugo site on push
 
 on:
   push:
