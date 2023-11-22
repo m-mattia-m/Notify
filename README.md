@@ -321,7 +321,7 @@ POST `/v1/settings/projects`
 ### Update
 
 Replace `<project-id>` in the URL with your project id. If you do not know this ID, you can list all your project
-with [list-projects](/docs/configuration/project#list).
+with [list-projects](https://m-mattia-m.github.com/Notify/docs/configuration/project#list).
 
 PUT `/v1/settings/projects/<project-id>`
 
@@ -340,14 +340,14 @@ GET `/v1/settings/projects`
 ### Get
 
 Get a specific project by their ID. Replace `<project-id>` in the URL with your project id. If you do not know this ID,
-you can list all your project with [list-projects](/docs/configuration/project#list).
+you can list all your project with [list-projects](https://m-mattia-m.github.com/Notify/docs/configuration/project#list).
 
 GET `/v1/settings/projects/<project-id>`
 
 ### Delete
 
 Delete a specific project by their ID. Replace `<project-id>` in the URL with your project id. If you do not know this
-ID, you can list all your project with [list-projects](/docs/configuration/project#list).
+ID, you can list all your project with [list-projects](https://m-mattia-m.github.com/Notify/docs/configuration/project#list).
 
 DELETE `/v1/settings/projects`
 
@@ -484,13 +484,13 @@ You can't update a host, because of the verification is to complex. You need to 
 ### Verify
 
 You need to verify a host. For this you need to add your `verify_token` in your
-DNS ([configure your own DNS](/docs/self-hosted/domain#dns)). For this you need go to your domain provider (e.g.
+DNS ([configure your own DNS](https://m-mattia-m.github.com/Notify/docs/self-hosted/domain#dns)). For this you need go to your domain provider (e.g.
 Cloudflare) and add a `TXT`-record with the tokens as the value. The `verify_token` looks like
 this: `notify-verification::abc123-de45-fg67-hi89-jklmn01234` after this you can send the verification-request (if it
 fails, be aware that a DNS-record can take up to 72 hours until it is active.). Replace `<project-id>` in the URL with
 your project id.
 
-For your development/local environment look [here](/docs/development/localhost#dns).
+For your development/local environment look [here](https://m-mattia-m.github.com/Notify/docs/development/localhost#dns).
 
 PUT `v1/settings/projects/<project-id>/hosts`
 
@@ -565,7 +565,7 @@ DELETE `v1/settings/projects/<project-id>/hosts/<host-id>`
 2. If you don't have your domain
    connected, [add](https://help.mailgun.com/hc/en-us/articles/203637190-How-Do-I-Add-or-Delete-a-Domain-) one.
 3. Create an [API-Key](https://app.mailgun.com/settings/api_security) for Notify.
-4. Create a [Notify project](/docs/configuration/project), if you don't have one yet.
+4. Create a [Notify project](https://m-mattia-m.github.com/Notify/docs/configuration/project), if you don't have one yet.
 5. Add your Mailgun API-Key to your project. At the moment, you need to configure it via Swagger (or cURL, ...). (We are
    working on a frontend.). Replace `<your-project-id>` in the url with your notify-project-id
    \
@@ -633,7 +633,7 @@ All activities will be logged in the mongo database.
 ### Hide message and subject
 
 If you are use the self-hosted variant, you can set in the configuration, that the subject and the massage should not be
-logged in the activity. [Read more](/docs/self-hosted/domain#activity)
+logged in the activity. [Read more](https://m-mattia-m.github.com/Notify/docs/self-hosted/domain#activity)
 
 ## Notification
 
@@ -758,10 +758,10 @@ to [Github](https://github.com/m-mattia-m/Notify) for this.
 
 ## Ideas
 
-- add [messaging providers](/docs/configuration/providers) (like Discord, Microsoft Teams, SMTP, Twitter, Instagram,
+- add [messaging providers](https://m-mattia-m.github.com/Notify/docs/configuration/providers) (like Discord, Microsoft Teams, SMTP, Twitter, Instagram,
   WhatsApp, ...)
-- test more [OIDC providers](/docs/self-hosted/authentication) and document if it works.
-- add [logging providers](/)
+- test more [OIDC providers](https://m-mattia-m.github.com/Notify/docs/self-hosted/authentication) and document if it works.
+- add [logging providers](https://m-mattia-m.github.com/Notify/docs/self-hosted/logging/) and document how it works.
 
 ## Development
 
