@@ -9,7 +9,7 @@ sidebar:
 
 ## Docker-compose
 
-You need to add the environment and the configuration. [Read more](/docs/self-hosted/file). You should have this folder
+You need to add the environment and the configuration. [Read more](../../self-hosted/file). You should have this folder
 structure:
 
 {{< filetree/container >}}
