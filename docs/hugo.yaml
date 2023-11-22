@@ -49,3 +49,10 @@ params:
   editURL:
     enable: true
     base: "https://github.com/m-mattia-m/Notify/edit/main/docs/content/_index.md"
+
+  search:
+    enable: true
+    type: flexsearch
+
+    flexsearch:
+      index: content

@@ -27,7 +27,7 @@ Create an [API-Key](https://app.mailgun.com/settings/api_security) for Notify.
 
 ### Step 4
 
-Create a [Notify project](/docs/configuration/project), if you don't have one yet.
+Create a [Notify project](../../project), if you don't have one yet.
 
 ### Step 5
 

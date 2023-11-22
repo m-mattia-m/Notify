@@ -9,5 +9,5 @@ sidebar:
 If you are developing, you find all the configurations and peculiarities for the development here.
 
 {{< cards >}}
-{{< card link="/docs/development/localhost" title="Localhost" >}}
+{{< card link="../development/localhost" title="Localhost" >}}
 {{< /cards >}}

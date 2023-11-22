@@ -14,10 +14,10 @@ create your resources. All this requests need a valid JWT token from a valid use
 cloud: [Zitadel](https://github.com/zitadel/zitadel/)).
 
 {{< cards >}}
-{{< card link="/docs/configuration/project" title="Project" >}}
-{{< card link="/docs/configuration/host" title="Hosts" >}}
-{{< card link="/docs/configuration/flow" title="Flows" >}}
-{{< card link="/docs/configuration/providers" title="Providers" >}}
+{{< card link="../configuration/project" title="Project" >}}
+{{< card link="../configuration/host" title="Hosts" >}}
+{{< card link="../configuration/flow" title="Flows" >}}
+{{< card link="../configuration/providers" title="Providers" >}}
 {{< /cards >}}
 
 

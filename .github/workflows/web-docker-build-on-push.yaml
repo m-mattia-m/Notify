@@ -1,0 +1,19 @@
+name: Build web docker image on push
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'develop/**'
+
+env:
+  IMAGE_NAME: notify-frontend
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build image
+        run: docker build . --file ./web/.docker/Dockerfile --tag $IMAGE_NAME

@@ -1,0 +1,15 @@
+**/.nuxt
+**/.docker
+**/.output
+**/node_modules
+**/openapi:generate
+**/.dockerignore
+**/.env
+**/.env.dist
+**/.gitignore
+
+!package.json
+!package-lock.json
+
+!**/package.json
+!**/package-lock.json

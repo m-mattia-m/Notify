@@ -10,8 +10,8 @@ sidebar:
 Notify is Open Source! So you can host Notify for yourself. 
 
 {{< cards >}}
-{{< card link="/docs/self-hosted/setup" title="Setup" >}}
-{{< card link="/docs/self-hosted/file" title="File" >}}
-{{< card link="/docs/self-hosted/database" title="Database" >}}
-{{< card link="/docs/self-hosted/authentication" title="Authentication" >}}
+{{< card link="../self-hosted/setup" title="Setup" >}}
+{{< card link="../self-hosted/file" title="File" >}}
+{{< card link="../self-hosted/database" title="Database" >}}
+{{< card link="../self-hosted/authentication" title="Authentication" >}}
 {{< /cards >}}

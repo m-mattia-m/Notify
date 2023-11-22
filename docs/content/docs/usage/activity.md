@@ -57,4 +57,4 @@ All activities will be logged in the mongo database.
 ## Hide message and subject
 
 If you are use the self-hosted variant, you can set in the configuration, that the subject and the massage should not be
-logged in the activity. [Read more](/docs/self-hosted/domain#activity)
+logged in the activity. [Read more](../../self-hosted/domain#activity)

@@ -9,9 +9,9 @@ You are welcome to contribute to Notify. Just do what you think is good and impo
 
 ### Ideas
 
-- add [messaging providers](/docs/configuration/providers) (like Discord, Microsoft Teams, SMTP, Twitter, Instagram, WhatsApp, ...)
-- test more [OIDC providers](/docs/self-hosted/authentication) and document if it works.
-- add [logging providers](/)
+- add [messaging providers](../docs/configuration/providers) (like Discord, Microsoft Teams, SMTP, Twitter, Instagram, WhatsApp, ...)
+- test more [OIDC providers](../docs/self-hosted/authentication) and document if it works.
+- add [logging providers](../docs/self-hosted/logging/) and document how it works.
 
 ## Development
 

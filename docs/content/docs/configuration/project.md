@@ -27,7 +27,7 @@ POST `/v1/settings/projects`
 ## Update
 
 Replace `<project-id>` in the URL with your project id. If you do not know this ID, you can list all your project
-with [list-projects](/docs/configuration/project#list).
+with [list-projects](../../configuration/project#list).
 
 PUT `/v1/settings/projects/<project-id>`
 
@@ -46,14 +46,14 @@ GET `/v1/settings/projects`
 ## Get
 
 Get a specific project by their ID. Replace `<project-id>` in the URL with your project id. If you do not know this ID,
-you can list all your project with [list-projects](/docs/configuration/project#list).
+you can list all your project with [list-projects](../../configuration/project#list).
 
 GET `/v1/settings/projects/<project-id>`
 
 ## Delete
 
 Delete a specific project by their ID. Replace `<project-id>` in the URL with your project id. If you do not know this
-ID, you can list all your project with [list-projects](/docs/configuration/project#list).
+ID, you can list all your project with [list-projects](../../configuration/project#list).
 
 DELETE `/v1/settings/projects`
 

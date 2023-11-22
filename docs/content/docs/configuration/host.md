@@ -37,13 +37,13 @@ You can't update a host, because of the verification is to complex. You need to 
 ## Verify
 
 You need to verify a host. For this you need to add your `verify_token` in your
-DNS ([configure your own DNS](/docs/self-hosted/domain#dns)). For this you need go to your domain provider (e.g.
+DNS ([configure your own DNS](../../self-hosted/domain#dns)). For this you need go to your domain provider (e.g.
 Cloudflare) and add a `TXT`-record with the tokens as the value. The `verify_token` looks like
 this: `notify-verification::abc123-de45-fg67-hi89-jklmn01234` after this you can send the verification-request (if it
 fails, be aware that a DNS-record can take up to 72 hours until it is active.). Replace `<project-id>` in the URL with
 your project id.
 
-For your development/local environment look [here](/docs/development/localhost#dns).
+For your development/local environment look [here](../..//development/localhost#dns).
 
 PUT `v1/settings/projects/<project-id>/hosts`
 

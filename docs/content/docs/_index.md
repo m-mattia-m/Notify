@@ -26,7 +26,7 @@ Notify is a simple secure message gateway witch allows you to send messages from
 Dive right into the following section to get started:
 
 {{< cards >}}
-  {{< card link="/docs/getting-started" title="Getting started" >}}
-  {{< card link="/docs/configuration" title="Configuration" >}}
-  {{< card link="/docs/development" title="Development" >}}
+  {{< card link="./getting-started" title="Getting started" >}}
+  {{< card link="./configuration" title="Configuration" >}}
+  {{< card link="./development" title="Development" >}}
 {{< /cards >}}
