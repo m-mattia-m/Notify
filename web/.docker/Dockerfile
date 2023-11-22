@@ -11,7 +11,7 @@ RUN npm install
 
 RUN npm install nuxt
 
-COPY . .
+COPY ./web .
 
 RUN npm run build
 
