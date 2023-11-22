@@ -1,4 +1,4 @@
-name: Build and publish docker image
+name: Build and publish web docker image
 
 on:
   release:
@@ -6,7 +6,7 @@ on:
       - created
 
 env:
-  IMAGE_NAME: notify
+  IMAGE_NAME: notify-frontend
   IMAGE_TAG: ${{ github.event.release.tag_name }} # eg. v0.0.1
   GH_USERNAME: m-mattia-m
 
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build image
-        run: docker build . --file ./.docker/Dockerfile --tag $IMAGE_NAME --label $IMAGE_TAG
+        run: docker build . --file ./web/.docker/Dockerfile --tag $IMAGE_NAME --label $IMAGE_TAG
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       - name: Add tag to image

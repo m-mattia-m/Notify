@@ -1,4 +1,4 @@
-name: Build and deploy Hugo site to Pages
+name: Build and publish Hugo site to Pages
 
 on:
   release:
