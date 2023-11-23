@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"notify/internal/helper"
 	"notify/internal/model"
 )
 
@@ -45,7 +46,9 @@ func (nac *NotificationApiClient) SendNotification(c *gin.Context) {
 	host := c.Request.Host
 	successMessage, err := svc.SendNotification(host, notification)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "failed to send"})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": helper.ValidateErrorResponse(err, "failed to send"),
+		})
 		return
 	}
 
