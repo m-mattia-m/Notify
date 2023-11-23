@@ -6,6 +6,7 @@ import (
 	"github.com/mailgun/mailgun-go/v4"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"net/url"
 	"notify/internal/model"
 	"strings"
 	"time"
@@ -22,13 +23,18 @@ func (c *Client) SendNotification(host string, notification model.Notification) 
 		return nil, err
 	}
 
+	validatedHost, err := url.Parse(host)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse host")
+	}
+
 	hosts, err := c.db.ListHosts(model.Host{ProjectId: notification.ProjectId})
 	if err != nil {
 		log.Error(err)
 		return nil, fmt.Errorf("failed to verify host")
 	}
 
-	if index := ifHostInHosts(host, hosts); hosts == nil || index == -1 || !hosts[index].Verified {
+	if index := ifHostInHosts(validatedHost.Host, hosts); hosts == nil || index == -1 || !hosts[index].Verified {
 		return nil, fmt.Errorf("failed to verify host")
 	}
 

@@ -43,8 +43,8 @@ func (nac *NotificationApiClient) SendNotification(c *gin.Context) {
 		return
 	}
 
-	host := c.Request.Host
-	successMessage, err := svc.SendNotification(host, notification)
+	referer := c.Request.Referer()
+	successMessage, err := svc.SendNotification(referer, notification)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"message": helper.ValidateErrorResponse(err, "failed to send"),
