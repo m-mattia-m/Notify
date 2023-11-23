@@ -1638,7 +1638,7 @@
                     "type": "string"
                 },
                 "message_template": {
-                    "description": "layout with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
+                    "description": "layouts with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
                     "type": "string"
                 },
                 "message_template_type": {
@@ -1678,7 +1678,7 @@
                     "type": "boolean"
                 },
                 "message_template": {
-                    "description": "layout with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
+                    "description": "layouts with the message -\u003e Title: \\{\\{ notification.Subject \\}\\} \\nCustomer creates new support-ticket via frontend-form with the message: \\{\\{ notification.message \\}\\}.",
                     "type": "string"
                 },
                 "message_template_type": {
@@ -1758,10 +1758,16 @@
         "model.MailgunCredentialsRequest": {
             "type": "object",
             "properties": {
+                "api_base": {
+                    "type": "string"
+                },
                 "api_key": {
                     "type": "string"
                 },
                 "domain": {
+                    "type": "string"
+                },
+                "reply_to_email": {
                     "type": "string"
                 },
                 "sender_email": {

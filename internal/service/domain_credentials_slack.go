@@ -7,6 +7,11 @@ import (
 )
 
 func (c *Client) CreateSlackCredentials(projectId string, credentialsRequest model.SlackCredentialsRequest) (*model.SuccessMessage, error) {
+	err := validateSlackCredentialsRequest(credentialsRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	credentials := model.SlackCredentials{
 		ProjectId:         projectId,
 		BotUserOAuthToken: credentialsRequest.BotUserOAuthToken,
@@ -23,6 +28,11 @@ func (c *Client) CreateSlackCredentials(projectId string, credentialsRequest mod
 }
 
 func (c *Client) UpdateSlackCredentials(projectId string, credentialsRequest model.SlackCredentialsRequest) (*model.SuccessMessage, error) {
+	err := validateSlackCredentialsRequest(credentialsRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	credentials := model.SlackCredentials{
 		ProjectId:         projectId,
 		BotUserOAuthToken: credentialsRequest.BotUserOAuthToken,
@@ -71,4 +81,11 @@ func (c *Client) IsSlackCredentialsAlreadySet(projectId string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func validateSlackCredentialsRequest(slackCredentialsRequest model.SlackCredentialsRequest) error {
+	if slackCredentialsRequest.BotUserOAuthToken == "" {
+		return fmt.Errorf("bot-user-oauth-token is a required attribute")
+	}
+	return nil
 }

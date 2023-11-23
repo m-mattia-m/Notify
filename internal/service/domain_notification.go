@@ -17,6 +17,11 @@ const (
 )
 
 func (c *Client) SendNotification(host string, notification model.Notification) (*model.SuccessMessage, error) {
+	err := validateNotificationRequest(notification)
+	if err != nil {
+		return nil, err
+	}
+
 	hosts, err := c.db.ListHosts(model.Host{ProjectId: notification.ProjectId})
 	if err != nil {
 		log.Error(err)
@@ -273,4 +278,17 @@ func getMailgunTarget(target, fallback string) string {
 		receiver = fallback
 	}
 	return receiver
+}
+
+func validateNotificationRequest(notification model.Notification) error {
+	if notification.ProjectId == "" {
+		return fmt.Errorf("projectId is a required attribute")
+	}
+	if notification.Subject == "" {
+		return fmt.Errorf("subject is a required attribute")
+	}
+	if notification.Message == "" {
+		return fmt.Errorf("message is a required attribute")
+	}
+	return nil
 }

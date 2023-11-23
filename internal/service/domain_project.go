@@ -8,6 +8,11 @@ import (
 )
 
 func (c *Client) CreateProject(projectRequest model.ProjectRequest, userId string) (*model.Project, error) {
+	err := validateProjectRequest(projectRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	project := model.Project{
 		Name:   projectRequest.Name,
 		UserId: userId,
@@ -72,6 +77,11 @@ func (c *Client) UpdateProject(projectId string, projectRequest model.ProjectReq
 		return nil, fmt.Errorf("invalid projectId")
 	}
 
+	err = validateProjectRequest(projectRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	projectFilter := model.Project{
 		Id:     projectObjectId,
 		UserId: userId,
@@ -112,4 +122,12 @@ func (c *Client) DeleteProject(projectId, userId string) (*model.SuccessMessage,
 	return &model.SuccessMessage{
 		Message: fmt.Sprintf("%s successfully deleted", projectResponse.Name),
 	}, nil
+}
+
+func validateProjectRequest(projectRequest model.ProjectRequest) error {
+	if projectRequest.Name == "" {
+		return fmt.Errorf("name is a required attribute")
+	}
+
+	return nil
 }

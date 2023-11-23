@@ -8,6 +8,11 @@ import (
 )
 
 func (c *Client) CreateFlow(projectId string, flowRequest model.FlowRequest) (*model.Flow, error) {
+	err := validateFlowRequest(flowRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	flow := model.Flow{
 		Name:                flowRequest.Name,
 		ProjectId:           projectId,
@@ -76,6 +81,11 @@ func (c *Client) ListFlows(projectId string) ([]*model.Flow, error) {
 }
 
 func (c *Client) UpdateFlow(flowId, projectId string, flowRequest model.FlowRequest) (*model.Flow, error) {
+	err := validateFlowRequest(flowRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	flowObjectId, err := primitive.ObjectIDFromHex(flowId)
 	if err != nil {
 		return nil, fmt.Errorf("invalid flowId")
@@ -142,4 +152,21 @@ func (c *Client) proveMessageTypes(messageType string) bool {
 	default:
 		return false
 	}
+}
+
+func validateFlowRequest(flowRequest model.FlowRequest) error {
+	if flowRequest.Name == "" {
+		return fmt.Errorf("name is a required attribute")
+	}
+	if flowRequest.SourceType == "" {
+		return fmt.Errorf("name is a required attribute")
+	}
+	if flowRequest.Target == "" {
+		return fmt.Errorf("name is a required attribute")
+	}
+	if flowRequest.MessageTemplateType == "text/plain" || flowRequest.MessageTemplateType == "text/html" {
+		return fmt.Errorf("message-template-type is a required attribute; only 'text/plain' or 'text/html' are valid")
+	}
+
+	return nil
 }

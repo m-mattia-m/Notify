@@ -19,6 +19,11 @@ func (c *Client) IfHostVerified(clientHost string) (bool, error) {
 }
 
 func (c *Client) CreateHost(hostRequest model.HostRequest, projectId string) (*model.Host, error) {
+	err := validateHostRequest(hostRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	host := model.Host{
 		ProjectId:   projectId,
 		Host:        hostRequest.Host,
@@ -200,4 +205,14 @@ func (c *Client) queryTXTVerificationRecord(host, dnsServer string) ([]string, e
 	}
 
 	return txtRecords, nil
+}
+
+func validateHostRequest(hostRequest model.HostRequest) error {
+	if hostRequest.Host == "" {
+		return fmt.Errorf("host is a required attribute")
+	}
+	if hostRequest.Stage == "" {
+		return fmt.Errorf("stage is a required attribute")
+	}
+	return nil
 }
