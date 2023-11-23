@@ -151,12 +151,12 @@ func checkIfRequiredConfigurationAttributesSet() {
 	if viper.GetString("server.version") == "" {
 		log.Fatal("failed to get required config attribute: 'server.version'")
 	}
-	if viper.GetString("logging.enable.console") == "" {
-		log.Fatal("failed to get required config attribute: 'logging.enable.console'")
-	}
-	if viper.GetString("logging.enable.sentry") == "" {
-		log.Fatal("failed to get required config attribute: 'logging.enable.sentry'")
-	}
+	//if viper.GetString("logging.enable.console") == "" {
+	//	log.Fatal("failed to get required config attribute: 'logging.enable.console'")
+	//}
+	//if viper.GetString("logging.enable.sentry") == "" {
+	//	log.Fatal("failed to get required config attribute: 'logging.enable.sentry'")
+	//}
 	if viper.GetString("authentication.oidc.issuer") == "" {
 		log.Fatal("failed to get required config attribute: 'authentication.oidc.issuer'")
 	}
@@ -166,10 +166,13 @@ func checkIfRequiredConfigurationAttributesSet() {
 	if viper.GetString("frontend.url") == "" {
 		log.Fatal("failed to get required config attribute: 'frontend.url'")
 	}
-	if viper.GetString("domain.activity.enable.subject") == "" {
-		log.Fatal("failed to get required config attribute: 'domain.activity.enable.subject'")
-	}
-	if viper.GetString("domain.activity.enable.message") == "" {
-		log.Fatal("failed to get required config attribute: 'failed to get required config attribute'")
-	}
+	//if viper.GetString("domain.activity.enable.subject") == "" {
+	//	log.Fatal("failed to get required config attribute: 'domain.activity.enable.subject'")
+	//}
+	//if viper.GetString("domain.activity.enable.message") == "" {
+	//	log.Fatal("failed to get required config attribute: 'domain.activity.enable.message'")
+	//}
+	//if viper.GetString("domain.swagger.port") == "" {
+	//	log.Fatal("failed to get required config attribute: 'failed to get required config attribute'")
+	//}
 }

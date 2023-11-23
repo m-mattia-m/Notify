@@ -169,8 +169,10 @@ data:
         verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
       activity:
         enable:
-          subject: true
-          message: true
+          subject: true # this is optional
+          message: true # this is optional
+      swagger:
+        port: false # this is optional
 ```
 
 ```yaml {filename="k8s-manifest-secret.yaml"}
@@ -712,8 +714,11 @@ domain:
     verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
   activity:
     enable:
-      subject: true # required
-      message: true # required
+      subject: true # optional
+      message: true # optional
+  swagger:
+     port: false # optional
+
 ```
 
 ## Environment
