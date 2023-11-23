@@ -24,11 +24,13 @@ func (c *Client) CreateMailgunCredentials(projectId string, credentialsRequest m
 	}
 
 	credentials := model.MailgunCredentials{
-		ProjectId:   projectId,
-		Domain:      credentialsRequest.Domain,
-		ApiKey:      credentialsRequest.ApiKey,
-		SenderEmail: credentialsRequest.SenderEmail,
-		SenderName:  credentialsRequest.SenderName,
+		ProjectId:    projectId,
+		Domain:       credentialsRequest.Domain,
+		ApiKey:       credentialsRequest.ApiKey,
+		ApiBase:      credentialsRequest.ApiBase,
+		SenderEmail:  credentialsRequest.SenderEmail,
+		SenderName:   credentialsRequest.SenderName,
+		ReplyToEmail: credentialsRequest.ReplyToEmail,
 	}
 
 	createdCredentials, err := c.db.CreateMailgunCredential(credentials)
@@ -47,11 +49,13 @@ func (c *Client) UpdateMailgunCredentials(projectId string, credentialsRequest m
 	}
 
 	credentials := model.MailgunCredentials{
-		ProjectId:   projectId,
-		Domain:      credentialsRequest.Domain,
-		ApiKey:      credentialsRequest.ApiKey,
-		SenderEmail: credentialsRequest.SenderEmail,
-		SenderName:  credentialsRequest.SenderName,
+		ProjectId:    projectId,
+		Domain:       credentialsRequest.Domain,
+		ApiKey:       credentialsRequest.ApiKey,
+		ApiBase:      credentialsRequest.ApiBase,
+		SenderEmail:  credentialsRequest.SenderEmail,
+		SenderName:   credentialsRequest.SenderName,
+		ReplyToEmail: credentialsRequest.ReplyToEmail,
 	}
 
 	updatedCredentials, err := c.db.UpdateMailgunCredential(credentials)

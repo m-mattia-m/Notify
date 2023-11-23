@@ -44,15 +44,15 @@ func (dc *DaoClient) CreateMailgunCredential(credentials model.MailgunCredential
 	}
 
 	return &model.MailgunCredentialsResponse{
-		Id:           searchedCredentials.Id,
-		ProjectId:    searchedCredentials.ProjectId,
-		Domain:       searchedCredentials.Domain,
-		ApiBase:      searchedCredentials.ApiBase,
-		SenderEmail:  searchedCredentials.SenderEmail,
-		SenderName:   searchedCredentials.SenderName,
-		ReplyToEmail: searchedCredentials.ReplyToEmail,
-		CreatedAt:    searchedCredentials.CreatedAt,
-		UpdatedAt:    searchedCredentials.UpdatedAt,
+		Id:           responseCredentials.Id,
+		ProjectId:    responseCredentials.ProjectId,
+		Domain:       responseCredentials.Domain,
+		ApiBase:      responseCredentials.ApiBase,
+		SenderEmail:  responseCredentials.SenderEmail,
+		SenderName:   responseCredentials.SenderName,
+		ReplyToEmail: responseCredentials.ReplyToEmail,
+		CreatedAt:    responseCredentials.CreatedAt,
+		UpdatedAt:    responseCredentials.UpdatedAt,
 	}, nil
 }
 
