@@ -13,8 +13,10 @@ domain:
     verifyDns: 8.8.8.8:53 # this is optional -> if not set then the google standard is used ("8.8.8.8:53")
   activity:
     enable:
-      subject: true
-      message: true
+      subject: true # this is optional
+      message: true # this is optional
+  swagger:
+    port: false # this is optional
 ```
 
 ## DNS
@@ -39,3 +41,15 @@ domain:
       subject: true # optional -> default: false
       message: true # optional -> default: false
 ```
+
+## Swagger
+
+It could be, that you don't need the port in the swagger-configuration. For this you can disable it in the config. Note,
+the port is needed to start the API.
+
+```yaml {filename="./configs/config.yaml"}
+domain:
+  swagger:
+    port: false # this is optional
+```
+

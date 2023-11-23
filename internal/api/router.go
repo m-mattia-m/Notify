@@ -21,8 +21,13 @@ func Router(svc service.Service) *gin.Engine {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	swaggerPort := ""
+	if viper.GetBool("domain.swagger.port") {
+		swaggerPort = fmt.Sprintf(":%s", viper.GetString("server.port"))
+	}
+
 	docs.SwaggerInfo.Schemes = []string{viper.GetString("server.scheme")}
-	docs.SwaggerInfo.Host = fmt.Sprintf("%s:%s", viper.GetString("server.domain"), viper.GetString("server.port"))
+	docs.SwaggerInfo.Host = fmt.Sprintf("%s%s", viper.GetString("server.domain"), swaggerPort)
 	docs.SwaggerInfo.BasePath = fmt.Sprintf("/%s", viper.GetString("server.version"))
 
 	r := gin.Default()

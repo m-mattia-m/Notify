@@ -50,6 +50,8 @@ domain:
     enable:
       subject: true # optional
       message: true # optional
+  swagger:
+    port: false # this is optional
 ```
 
 ## Environment
