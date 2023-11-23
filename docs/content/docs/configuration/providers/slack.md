@@ -25,9 +25,10 @@ Go to your [Slack integrations](https://api.slack.com/apps).
 Create a Slack integration. After the creation go to ***Features > OAuth & Permissions*** and then
 ***Scopes > Bot Token Scopes***. Here you need to add this permission: `chat:write` to send
 messages. You can also add `channels:join`, so that your integration can join public channels independently (optional).
-Go in this page to ***OAuth Tokens for Your Workspace > Bot User OAuth Token*** and copy this token. This token should
-have this format: `xoxb-123456abcdef...` You can also add in ***Settings > Basic Information > Display Information*** a
-bot image, description, background color and the shown name (not functional, only for design).
+Go in this page to ***OAuth Tokens for Your Workspace > Bot User OAuth Token*** click "install to Workspace" and copy
+this token. This token should have this format: `xoxb-123456abcdef...` You can also add in
+***Settings > Basic Information > Display Information*** a bot image, description, background color and the shown name (
+not functional, only for design).
 
 ### Step 4
 

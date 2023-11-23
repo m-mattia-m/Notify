@@ -164,7 +164,7 @@ func validateFlowRequest(flowRequest model.FlowRequest) error {
 	if flowRequest.Target == "" {
 		return fmt.Errorf("name is a required attribute")
 	}
-	if flowRequest.MessageTemplateType == "text/plain" || flowRequest.MessageTemplateType == "text/html" {
+	if flowRequest.MessageTemplateType != "text/plain" && flowRequest.MessageTemplateType != "text/html" {
 		return fmt.Errorf("message-template-type is a required attribute; only 'text/plain' or 'text/html' are valid")
 	}
 
