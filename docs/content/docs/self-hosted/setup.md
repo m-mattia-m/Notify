@@ -131,6 +131,8 @@ data:
         enable:
           subject: true
           message: true
+      swagger:
+        port: false
 ```
 
 ### Secret
@@ -258,6 +260,87 @@ spec:
             backend:
               service:
                 name: notify
+                port:
+                  number: 80
+  ingressClassName: nginx
+```
+### Deployment web
+
+```yaml {filename="k8s-manifest-deployment-web.yaml"}
+# Here the application itself is created
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify-web
+  namespace: notify
+spec:
+  replicas: 1 # set the number of pods you want
+  selector:
+    matchLabels:
+      app: notify
+  template:
+    metadata:
+      labels:
+        app: notify
+    spec:
+      containers:
+        - name: notify-web
+          image: ghcr.io/m-mattia-m/notify-web:v1.0.7
+          env:
+            - name: NUXT_PUBLIC_OIDC_ISSUER
+              value: https://zitadel.example.com
+            - name: NUXT_PUBLIC_OIDC_CLIENT_ID
+              value: 1234@notify
+            - name: NUXT_PUBLIC_APP_ENV
+              value: prod
+            - name: NUXT_PUBLIC_APP_URL
+              value: https://notify.example.com
+            - name: NUXT_PUBLIC_API_URL
+              value: https://notify-api.example.com
+```
+
+### Service web
+
+```yaml {filename="k8s-manifest-service-web.yaml"}
+# here is the service-creation to expose the app in the namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: notify-web
+  namespace: notify
+spec:
+  selector:
+    app.kubernetes.io/name: notify
+  ports:
+    - name: http
+      port: 80 # external port
+      targetPort: 3000 # nitro default port
+  selector:
+    app: notify
+```
+
+### Ingress web
+
+```yaml {filename="k8s-manifest-ingress-web.yaml"}
+# here is the route-creation to expose the app-service to the internet
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: notify-web
+  namespace: notify
+  annotations:
+    cert-manager.io/issuer: letsencrypt-nginx
+spec:
+  rules:
+    - host: notify.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: notify-web
                 port:
                   number: 80
   ingressClassName: nginx
