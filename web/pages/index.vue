@@ -10,6 +10,9 @@ function copyBearerToClipboard() {
   navigator.clipboard.writeText(`${user?.id_token}`)
 }
 
+useHead({
+  title: `Notify | Dashboard`
+})
 </script>
 
 <template>
