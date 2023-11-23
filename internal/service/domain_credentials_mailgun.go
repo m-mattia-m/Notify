@@ -18,6 +18,11 @@ func (c *Client) GetMailgunCredentials(projectId string) (*model.MailgunCredenti
 }
 
 func (c *Client) CreateMailgunCredentials(projectId string, credentialsRequest model.MailgunCredentialsRequest) (*model.MailgunCredentialsResponse, error) {
+	err := validateMailgunCredentialsRequest(credentialsRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	credentials := model.MailgunCredentials{
 		ProjectId:   projectId,
 		Domain:      credentialsRequest.Domain,
@@ -36,6 +41,11 @@ func (c *Client) CreateMailgunCredentials(projectId string, credentialsRequest m
 }
 
 func (c *Client) UpdateMailgunCredentials(projectId string, credentialsRequest model.MailgunCredentialsRequest) (*model.MailgunCredentialsResponse, error) {
+	err := validateMailgunCredentialsRequest(credentialsRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	credentials := model.MailgunCredentials{
 		ProjectId:   projectId,
 		Domain:      credentialsRequest.Domain,
@@ -86,4 +96,26 @@ func (c *Client) IsMailgunCredentialsAlreadySet(projectId string) (bool, error) 
 	}
 
 	return false, nil
+}
+
+func validateMailgunCredentialsRequest(mailgunCredentialsRequest model.MailgunCredentialsRequest) error {
+	if mailgunCredentialsRequest.Domain == "" {
+		return fmt.Errorf("domain is a required attribute")
+	}
+	if mailgunCredentialsRequest.ApiKey == "" {
+		return fmt.Errorf("api-key is a required attribute")
+	}
+	if mailgunCredentialsRequest.ApiBase == "" {
+		return fmt.Errorf("api-base is a required attribute; only 'us' or 'eu' are valid")
+	}
+	if mailgunCredentialsRequest.SenderEmail == "" {
+		return fmt.Errorf("sender-email is a required attribute")
+	}
+	if mailgunCredentialsRequest.SenderName == "" {
+		return fmt.Errorf("sender-name is a required attribute")
+	}
+	if mailgunCredentialsRequest.ReplyToEmail == "" {
+		return fmt.Errorf("reply-to-email is a required attribute")
+	}
+	return nil
 }

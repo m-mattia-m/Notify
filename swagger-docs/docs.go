@@ -1761,10 +1761,16 @@ const docTemplate = `{
         "model.MailgunCredentialsRequest": {
             "type": "object",
             "properties": {
+                "api_base": {
+                    "type": "string"
+                },
                 "api_key": {
                     "type": "string"
                 },
                 "domain": {
+                    "type": "string"
+                },
+                "reply_to_email": {
                     "type": "string"
                 },
                 "sender_email": {
