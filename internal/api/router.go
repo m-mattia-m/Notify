@@ -34,10 +34,7 @@ func Router(svc service.Service) *gin.Engine {
 	r.RedirectTrailingSlash = false
 
 	corsPolicy := cors.DefaultConfig()
-	corsPolicy.AllowOrigins = []string{
-		viper.GetString("frontend.url"),
-		fmt.Sprintf("%s://%s:%s", viper.GetString("server.scheme"), viper.GetString("server.domain"), viper.GetString("server.port")),
-	}
+	corsPolicy.AllowOrigins = []string{"*"}
 	corsPolicy.AllowHeaders = append(corsPolicy.AllowHeaders, "Authorization")
 
 	r.Use(cors.New(corsPolicy))
