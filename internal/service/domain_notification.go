@@ -207,7 +207,7 @@ func (c *Client) logNotificationActivity(activity model.Activity) error {
 
 func ifHostInHosts(host string, hosts []*model.Host) int {
 	for i, currentHost := range hosts {
-		if currentHost.Host == host {
+		if strings.HasSuffix(currentHost.Host, host) {
 			return i
 		}
 	}
