@@ -20,31 +20,43 @@ const (
 func (c *Client) SendNotification(host string, notification model.Notification) (*model.SuccessMessage, error) {
 	err := validateNotificationRequest(notification)
 	if err != nil {
+		log.Debug("notification-request-validation is failed; ", err.Error())
 		return nil, err
 	}
 
 	validatedHost, err := url.Parse(host)
 	if err != nil {
+		log.Debug("parse host is failed; ", err.Error())
 		return nil, fmt.Errorf("failed to parse host")
 	}
 
 	hosts, err := c.db.ListHosts(model.Host{ProjectId: notification.ProjectId})
 	if err != nil {
 		log.Error(err)
+		log.Debug("failed to list hosts; ", err.Error())
 		return nil, fmt.Errorf("failed to verify host")
 	}
 
 	if index := ifHostInHosts(validatedHost.Host, hosts); hosts == nil || index == -1 || !hosts[index].Verified {
+		log.Debug(
+			"failed to verify hosts; ",
+			fmt.Sprintf("host: %s; ", validatedHost.Host),
+			fmt.Sprintf("index: %d; ", index),
+			fmt.Sprintf("length: %d; ", len(hosts)),
+			fmt.Sprintf("hosts: %v", hosts),
+		)
 		return nil, fmt.Errorf("failed to verify host")
 	}
 
 	flows, err := c.db.ListFlows(model.Flow{ProjectId: notification.ProjectId})
 	if err != nil {
 		log.Error(err)
+		log.Debug("failed to list flows; ", err.Error())
 		return nil, fmt.Errorf("failed to list flows")
 	}
 
 	if flows == nil || len(flows) == 0 {
+		log.Debug("failed to list flows; ", "there are no flows; ", flows)
 		return nil, fmt.Errorf("failed to list flows")
 	}
 
